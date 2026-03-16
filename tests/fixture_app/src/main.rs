@@ -2,14 +2,15 @@
 #![feature(try_trait_v2)]
 use exit_safely::Termination;
 use try_v2::*;
+use std::io;
 
 fn main() -> Exit<()> {
     println!("Hello, world!");
     let mut args = std::env::args();
-    match args.len() - 1 {
-        2 => return Exit::InvocationError(args.nth(2).unwrap()),
-        3 => return Exit::Other,
-        _ => (),
+    // `ok_or(Exit::foo)?` will exit safely with ExitCode from `foo`
+    if args.nth(2).ok_or(Exit::InvocationError("Not enough args".to_string()))?  == "FAIL" {
+        // directly returning `Exit::foo` will exit safely with ExitCode from `foo`
+        return Exit::Other
     }
     Exit::Ok(())
 }
@@ -18,7 +19,7 @@ fn main() -> Exit<()> {
 #[repr(u8)]
 enum Exit<T: std::process::Termination> {
     Ok(T) = 0,
-    Error(String) = 1,
+    FileError(io::Error) = 1,
     InvocationError(String) = 2,
     Other = 3,
 }
