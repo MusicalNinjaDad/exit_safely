@@ -7,9 +7,9 @@ use try_v2::*;
 fn main() -> Exit<()> {
     println!("Hello, world!");
     let mut args = std::env::args();
-    // `ok_or(Exit::foo)?` will exit safely with ExitCode from `foo`
     if args
         .nth(2)
+        // `ok_or(Exit::foo)?` will exit safely with ExitCode from `foo`
         .ok_or(Exit::InvocationError("Not enough args".to_string()))?
         == "FAIL"
     {
