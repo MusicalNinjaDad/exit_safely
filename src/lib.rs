@@ -61,7 +61,7 @@ use syn::{Data, DeriveInput};
 ///
 /// ## Requires:
 ///   - `#[repr(u8)]`
-///   - Discrimanant assigned to each variation, will be used as the ExitCode
+///   - Discriminant assigned to each variation, will be used as the ExitCode
 ///   - Generic parameter as type of the "Ok" case, which must implement std::process::Termination
 ///   - The data stored in any variants must implement Display
 pub fn termination_derive(input: TokenStream1) -> TokenStream1 {
