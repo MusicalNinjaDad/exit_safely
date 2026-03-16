@@ -5,6 +5,11 @@ use try_v2::*;
 
 fn main() -> Exit<()> {
     println!("Hello, world!");
+    let mut args = std::env::args();
+    match args.len() - 1 {
+        2 => return Exit::InvocationError(args.nth(2).unwrap()),
+        _ => (),
+    }
     Exit::Ok(())
 }
 
