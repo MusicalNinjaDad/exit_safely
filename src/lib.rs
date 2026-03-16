@@ -25,8 +25,6 @@
 //!     InvocationError(String) = 2,
 //! }
 //! ```
-use std::env::var;
-
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
@@ -67,6 +65,18 @@ fn impl_termination(input: TokenStream2) -> TokenStream2 {
         .skip(1)
         .filter(|variant| variant.fields.is_empty())
         .map(|variant| variant.discriminant.clone().unwrap().1);
+    let fail_message_variants = enum_data
+        .variants
+        .iter()
+        .skip(1)
+        .filter(|variant| !variant.fields.is_empty())
+        .map(|variant| variant.ident.clone());
+    let fail_message_discriminants = enum_data
+        .variants
+        .iter()
+        .skip(1)
+        .filter(|variant| !variant.fields.is_empty())
+        .map(|variant| variant.discriminant.clone().unwrap().1);
 
     quote! {
         impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
@@ -74,12 +84,17 @@ fn impl_termination(input: TokenStream2) -> TokenStream2 {
                 match self {
                     #name::#success_variant(v) => v.report(),
                     #(#name::#silent_fail_variants => ExitCode::from(#silent_fail_discriminants),)*
+                    #(#name::#fail_message_variants(msg) => {
+                        _ = stderr().write(msg.to_string().as_bytes());
+                        ExitCode::from(#fail_message_discriminants)
+                    })*
                 }
             }
         }
     }
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
 
@@ -101,6 +116,14 @@ mod tests {
                     match self {
                         Exit::Ok(v) => v.report(),
                         Exit::Other => ExitCode::from(3),
+                        Exit::Error(msg) => {
+                            _ = stderr().write(msg.to_string().as_bytes());
+                            ExitCode::from(1)
+                        }
+                        Exit::InvocationError(msg) => {
+                            _ = stderr().write(msg.to_string().as_bytes());
+                            ExitCode::from(2)
+                        }
                     }
                 }
             }
