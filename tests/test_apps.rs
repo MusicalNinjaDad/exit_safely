@@ -47,7 +47,7 @@ fn exit_msg_string() {
 #[test]
 fn exit_silent() {
     let mut cmd = Command::new(APP.as_os_str());
-    cmd.args(["FAIL", "FAIL"]);
+    cmd.args(["./Cargo.toml", "FAIL"]);
     let output = cmd.output().unwrap();
     let stdout = String::from_utf8(output.stdout).unwrap();
     let stderr = String::from_utf8(output.stderr).unwrap();

@@ -26,6 +26,21 @@ impl<T: _T> From<io::Error> for Exit<T> {
     }
 }
 
+// And for validation of data you can impl From<foo> for Exit
+struct File {
+    pass_or_fail: String,
+    contents: String,
+}
+
+impl From<File> for Exit<()> {
+    fn from(file: File) -> Self {
+        match file.pass_or_fail.as_str() {
+            "PASS" => Exit::Ok(()),
+            _ => Exit::Other,
+        }
+    }
+}
+
 // if given too few args it will fail with ExitCode 2 (InvocationError) and a message
 // if given `<FILENAME> <FAIL>` it will fail with ExitCode (Other) 3,
 // if given `<FILENAME> <ANYTHING_ELSE>` it will check file exists
@@ -42,14 +57,16 @@ fn main() -> Exit<()> {
     let pass_or_fail = args
         .next()
         .ok_or(Exit::InvocationError("Not enough args".to_string()))?;
-    if pass_or_fail == "FAIL" {
-        // directly returning `Exit::foo` will exit safely with ExitCode from `foo`
-        return Exit::Other;
-    }
 
     // Using `?` on an Error which can convert to Exit will also exit safely with the relevant ExitCode
-    let _file_contents = std::fs::read_to_string(&filename)?;
+    let contents = std::fs::read_to_string(&filename)?;
+    let file = File {
+        pass_or_fail,
+        contents,
+    };
 
-    // If everything goes well ...
-    Exit::Ok(())
+    // If everything goes well, check the data ...
+    Exit::from(file)
+
+    // Or you could of course just `Exit::Ok(())`
 }
