@@ -28,7 +28,7 @@
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
-use syn::DeriveInput;
+use syn::{Data, DeriveInput};
 
 #[proc_macro_derive(Termination)]
 /// Derives Termination.
@@ -48,10 +48,18 @@ fn impl_termination(input: TokenStream2) -> TokenStream2 {
     let name = &ast.ident;
     let (impl_generics, ty_generics, where_clause) = &ast.generics.split_for_impl();
 
+    let Data::Enum(enum_data) = ast.data else {
+        todo!()
+    };
+
+    let success_variant = &enum_data.variants[0].ident; //TODO: validate field type & discriminant
+
     quote! {
         impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
             fn report(self) -> ExitCode {
-                    todo!()
+                match self {
+                    #name::#success_variant(v) => v.report(),
+                }
             }
         }
     }
@@ -74,7 +82,9 @@ mod tests {
         let expected_impl = quote! {
             impl<T: _Termination> std::process::Termination for Exit<T> {
                 fn report(self) -> ExitCode {
-                    todo!()
+                    match self {
+                        Exit::Ok(v) => v.report(),
+                    }
                 }
             }
         };
