@@ -9,7 +9,7 @@ use exit_safely::Termination;
 use try_v2::Try;
 
 use std::sync::LazyLock;
-static APP: LazyLock<PathBuf> = LazyLock::new( ||
+static APP: LazyLock<PathBuf> = LazyLock::new(|| {
     CargoBuild::new()
         .bin("fixture_app")
         .manifest_path("./tests/fixture_app/Cargo.toml")
@@ -17,8 +17,8 @@ static APP: LazyLock<PathBuf> = LazyLock::new( ||
         .run()
         .unwrap()
         .path()
-        .to_owned(),
-);
+        .to_owned()
+});
 
 #[test]
 fn exit_ok() {
