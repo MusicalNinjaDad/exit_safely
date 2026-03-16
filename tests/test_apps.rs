@@ -58,7 +58,7 @@ fn exit_silent() {
 
 #[test]
 fn file_not_found() {
-        let mut cmd = Command::new(APP.as_os_str());
+    let mut cmd = Command::new(APP.as_os_str());
     cmd.args(["FAIL", "PASS"]);
     let output = cmd.output().unwrap();
     let stdout = String::from_utf8(output.stdout).unwrap();
