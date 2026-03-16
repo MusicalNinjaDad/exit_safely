@@ -28,6 +28,7 @@
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
+use syn::DeriveInput;
 
 #[proc_macro_derive(Termination)]
 /// Derives Termination.
@@ -42,5 +43,44 @@ pub fn termination_derive(input: TokenStream1) -> TokenStream1 {
 }
 
 fn impl_termination(input: TokenStream2) -> TokenStream2 {
-    TokenStream2::new()
+    let ast: DeriveInput = syn::parse2(input).unwrap();
+
+    let name = &ast.ident;
+    let (impl_generics, ty_generics, where_clause) = &ast.generics.split_for_impl();
+
+    quote! {
+        impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
+            fn report(self) -> ExitCode {
+                    todo!()
+            }
+        }
+    }
+}
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn derive() {
+        let original = quote! {
+            #[derive(Termination)]
+            #[repr(u8)]
+            enum Exit<T: _Termination> {
+                Ok(T) = 0,
+                Error(String) = 1,
+                InvocationError(String) = 2,
+            }
+        };
+        let expected_impl = quote! {
+            impl<T: _Termination> std::process::Termination for Exit<T> {
+                fn report(self) -> ExitCode {
+                    todo!()
+                }
+            }
+        };
+        assert_eq!(
+            expected_impl.to_string(),
+            impl_termination(original).to_string()
+        );
+    }
 }
