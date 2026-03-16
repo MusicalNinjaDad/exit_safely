@@ -1,0 +1,24 @@
+[package]
+name = "exit_safely"
+version = "0.1.0"
+edition = "2024"
+readme = "README.md"
+description = "Enables exiting safely with custom exit codes while still calling `Drop` as needed. Aims for minimal magic and maximum flexibilty."
+authors = ["Mike Foster <https://github.com/MusicalNinjaDad>"]
+keywords = ["derive", "ExitCode", "Drop", "Termination", "CLI"]
+homepage = "https://github.com/MusicalNinjaDad/exit_safely"
+repository = "https://github.com/MusicalNinjaDad/exit_safely"
+categories = ["development-tools", "rust-patterns"]
+license = "MIT"
+include = [
+    "/src/",
+    "/tests/"
+]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "2.0.117"
+proc-macro2 = "1.0.106"
+quote = "1.0.45"
