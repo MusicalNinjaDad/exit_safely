@@ -8,6 +8,7 @@ fn main() -> Exit<()> {
     let mut args = std::env::args();
     match args.len() - 1 {
         2 => return Exit::InvocationError(args.nth(2).unwrap()),
+        3 => return Exit::Other,
         _ => (),
     }
     Exit::Ok(())
