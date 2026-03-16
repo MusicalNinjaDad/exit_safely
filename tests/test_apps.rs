@@ -55,3 +55,15 @@ fn exit_silent() {
     assert_eq!("", stderr);
     assert_eq!(3, output.status.code().unwrap());
 }
+
+#[test]
+fn file_not_found() {
+        let mut cmd = Command::new(APP.as_os_str());
+    cmd.args(["FAIL", "PASS"]);
+    let output = cmd.output().unwrap();
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    assert_eq!("Hello, world!\n", stdout);
+    assert_eq!("No such file or directory (os error 2)\n", stderr);
+    assert_eq!(1, output.status.code().unwrap());
+}
