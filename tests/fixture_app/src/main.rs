@@ -11,10 +11,13 @@ use std::process::Termination as _T; // Needed as trait bound for Exit
 #[repr(u8)]
 enum Exit<T: _T> {
     Ok(T) = 0,
+
     // Any io errors are ExitCode 1, delegate stderr contents to io::Error's Display
     FileError(io::Error) = 1,
+
     // ExitCode 2 can be manually created with a String to be sent to stderr
     InvocationError(String) = 2,
+
     // Just exit with ExitCode 3 and nothing extra sent to stderr
     Other = 3,
 }
