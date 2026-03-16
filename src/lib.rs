@@ -25,6 +25,8 @@
 //!     InvocationError(String) = 2,
 //! }
 //! ```
+use std::env::var;
+
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
@@ -53,12 +55,25 @@ fn impl_termination(input: TokenStream2) -> TokenStream2 {
     };
 
     let success_variant = &enum_data.variants[0].ident; //TODO: validate field type & discriminant
+    let silent_fail_variants = enum_data
+        .variants
+        .iter()
+        .skip(1)
+        .filter(|variant| variant.fields.is_empty())
+        .map(|variant| variant.ident.clone());
+    let silent_fail_discriminants = enum_data
+        .variants
+        .iter()
+        .skip(1)
+        .filter(|variant| variant.fields.is_empty())
+        .map(|variant| variant.discriminant.clone().unwrap().1);
 
     quote! {
         impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
             fn report(self) -> ExitCode {
                 match self {
                     #name::#success_variant(v) => v.report(),
+                    #(#name::#silent_fail_variants => ExitCode::from(#silent_fail_discriminants),)*
                 }
             }
         }
@@ -77,6 +92,7 @@ mod tests {
                 Ok(T) = 0,
                 Error(String) = 1,
                 InvocationError(String) = 2,
+                Other = 3,
             }
         };
         let expected_impl = quote! {
@@ -84,6 +100,7 @@ mod tests {
                 fn report(self) -> ExitCode {
                     match self {
                         Exit::Ok(v) => v.report(),
+                        Exit::Other => ExitCode::from(3),
                     }
                 }
             }
