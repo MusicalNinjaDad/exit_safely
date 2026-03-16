@@ -2,11 +2,9 @@
 #![feature(never_type)]
 #![feature(try_trait_v2)]
 
-use std::{assert_matches::assert_matches, path::PathBuf, process::Command};
+use std::{path::PathBuf, process::Command};
 
 use escargot::CargoBuild;
-use exit_safely::Termination;
-use try_v2::Try;
 
 use std::sync::LazyLock;
 static APP: LazyLock<PathBuf> = LazyLock::new(|| {
