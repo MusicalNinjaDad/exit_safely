@@ -80,13 +80,14 @@ fn impl_termination(input: TokenStream2) -> TokenStream2 {
 
     quote! {
         impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
-            fn report(self) -> ExitCode {
+            fn report(self) -> std::process::ExitCode {
                 match self {
                     #name::#success_variant(v) => v.report(),
-                    #(#name::#silent_fail_variants => ExitCode::from(#silent_fail_discriminants),)*
+                    #(#name::#silent_fail_variants => std::process::ExitCode::from(#silent_fail_discriminants),)*
                     #(#name::#fail_message_variants(msg) => {
-                        _ = stderr().write(msg.to_string().as_bytes());
-                        ExitCode::from(#fail_message_discriminants)
+                        let mut stderr = std::io::stderr();
+                        _ = std::io::Write::write_fmt(&mut stderr, std::format_args!("{}\n", msg));
+                        std::process::ExitCode::from(#fail_message_discriminants)
                     })*
                 }
             }
@@ -112,17 +113,19 @@ mod tests {
         };
         let expected_impl = quote! {
             impl<T: _Termination> std::process::Termination for Exit<T> {
-                fn report(self) -> ExitCode {
+                fn report(self) -> std::process::ExitCode {
                     match self {
                         Exit::Ok(v) => v.report(),
-                        Exit::Other => ExitCode::from(3),
+                        Exit::Other => std::process::ExitCode::from(3),
                         Exit::Error(msg) => {
-                            _ = stderr().write(msg.to_string().as_bytes());
-                            ExitCode::from(1)
+                            let mut stderr = std::io::stderr();
+                            _ = std::io::Write::write_fmt(&mut stderr, std::format_args!("{}\n", msg));
+                            std::process::ExitCode::from(1)
                         }
                         Exit::InvocationError(msg) => {
-                            _ = stderr().write(msg.to_string().as_bytes());
-                            ExitCode::from(2)
+                            let mut stderr = std::io::stderr();
+                            _ = std::io::Write::write_fmt(&mut stderr, std::format_args!("{}\n", msg));
+                            std::process::ExitCode::from(2)
                         }
                     }
                 }
