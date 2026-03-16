@@ -25,6 +25,30 @@
 //!     InvocationError(String) = 2,
 //! }
 //! ```
+//!
+//! For use in `main()` you will probably also want to derive `Debug` and `Try`
+//! (via [try_v2](https://docs.rs/try_v2/latest/try_v2/)):
+//!
+//! ```rust
+//! #![feature(never_type)]
+//! #![feature(try_trait_v2)]
+//! use exit_safely::Termination;
+//! use try_v2::*;
+//!
+//! #[derive(Debug, Termination, Try, Try_ConvertResult)]
+//! #[repr(u8)]
+//! enum Exit<T: std::process::Termination> {
+//!     Ok(T) = 0,
+//!     Error(String) = 1,
+//!     InvocationError(String) = 2,
+//! }
+//!
+//! fn main() -> Exit<()> {
+//!     // Use either `?` or return `Exit::...` to exit early from your code ...
+//!     Exit::Ok(())
+//! }
+//!
+//! ```
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
