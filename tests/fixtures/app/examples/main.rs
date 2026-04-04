@@ -6,7 +6,7 @@ use try_v2::*;
 use std::process::Termination as _T; // Needed as trait bound for Exit
 
 #[derive(Debug, Termination, Try, Try_ConvertResult)]
-enum Exit<T: _T> {
+enum NoRepr<T: _T> {
     Ok(T),
     Fail,
 }

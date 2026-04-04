@@ -10,7 +10,7 @@ use std::sync::LazyLock;
 static APP: LazyLock<PathBuf> = LazyLock::new(|| {
     CargoBuild::new()
         .bin("fixture_app")
-        .manifest_path("./tests/fixtures/good_app/Cargo.toml")
+        .manifest_path("./tests/fixtures/app/Cargo.toml")
         .current_release()
         .run()
         .unwrap()
