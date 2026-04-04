@@ -1,3 +1,5 @@
+#![feature(iterator_try_collect)]
+
 //! `exit_safely` provides a simple and highly transparent option to `derive(Termination)` from
 //! your own enum with a very simple API which still provides you full control over exit codes
 //! and what to (safely) output to stderr.
@@ -53,9 +55,12 @@
 //! See the integration tests or readme for a full example
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
-use proc_macro2_diagnostic::{DiagnosticResult::{self, Ok}, DiagnosticStream};
+use proc_macro2_diagnostic::{
+    DiagnosticResult::{self, Ok},
+    DiagnosticStream,
+};
 use quote::{format_ident, quote};
-use syn::{Data, DeriveInput, spanned::Spanned};
+use syn::{Data, DeriveInput, Variant, spanned::Spanned};
 
 #[proc_macro_derive(Termination)]
 /// Derives Termination.
@@ -80,12 +85,25 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
     };
 
     let attributes = ast.attrs.clone();
-    if attributes.is_empty() || attributes.iter().find(|attr| {
-        let attr_path = attr.meta.path();
-        attr_path.is_ident(&format_ident!("repr"))
-    }).is_none() {
-        let span = enum_data.enum_token.span().join(enum_data.brace_token.span.open()).expect("opening brace");
-        DiagnosticResult::warn_spanned((), span, "add #[repr(u8)] above this to allow for valid error codes")?
+    if attributes.is_empty()
+        || attributes
+            .iter()
+            .find(|attr| {
+                let attr_path = attr.meta.path();
+                attr_path.is_ident(&format_ident!("repr"))
+            })
+            .is_none()
+    {
+        let span = enum_data
+            .enum_token
+            .span()
+            .join(enum_data.brace_token.span.open())
+            .expect("opening brace");
+        DiagnosticResult::warn_spanned(
+            (),
+            span,
+            "add #[repr(u8)] above this to allow for valid error codes",
+        )?
     };
 
     let success_variant = &enum_data.variants[0].ident; //TODO: validate field type & discriminant
@@ -95,25 +113,38 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .skip(1)
         .filter(|variant| variant.fields.is_empty())
         .map(|variant| variant.ident.clone());
-    let silent_fail_discriminants = enum_data
+    let get_discriminant = |variant: &Variant| {
+        variant
+            .discriminant
+            .clone()
+            .ok_or_else(|| {
+                DiagnosticResult::error(
+                    "Termination requires explicit discriminants to specify the correct ExitCodes",
+                )
+                .add_help(variant.span(), "add `= n` after this")
+            })
+            .map(|tuple| tuple.1)
+    };
+    let silent_fail_discriminants: Vec<_> = enum_data
         .variants
         .iter()
         .skip(1)
         .filter(|variant| variant.fields.is_empty())
-        .map(|variant| variant.discriminant.clone().expect("discriminant ID").1);
+        .map(get_discriminant)
+        .try_collect()?;
     let fail_message_variants = enum_data
         .variants
         .iter()
         .skip(1)
         .filter(|variant| !variant.fields.is_empty())
         .map(|variant| variant.ident.clone());
-    let fail_message_discriminants = enum_data
+    let fail_message_discriminants: Vec<_> = enum_data
         .variants
         .iter()
         .skip(1)
         .filter(|variant| !variant.fields.is_empty())
-        .map(|variant| variant.discriminant.clone().expect("discriminant ID").1);
-
+        .map(get_discriminant)
+        .try_collect()?;
     Ok(quote! {
         impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
             fn report(self) -> std::process::ExitCode {
