@@ -26,3 +26,9 @@ quote = "1.0.45"
 [dev-dependencies]
 escargot = "0.5.15"
 try_v2 = "0.2.0"
+
+[workspace]
+members = ["tests/fixtures/*"]
+
+[workspace.dependencies]
+exit_safely = { path = "."}

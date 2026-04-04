@@ -32,7 +32,7 @@ impl<T: _T> From<io::Error> for Exit<T> {
 // And for validation of data you can impl From<foo> for Exit
 struct File {
     pass_or_fail: String,
-    contents: String,
+    _contents: String,
 }
 
 impl From<File> for Exit<()> {
@@ -65,7 +65,7 @@ fn main() -> Exit<()> {
     let contents = std::fs::read_to_string(&filename)?;
     let file = File {
         pass_or_fail,
-        contents,
+        _contents: contents,
     };
 
     // If everything goes well, check the data ...
