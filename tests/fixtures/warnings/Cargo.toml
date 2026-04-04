@@ -1,0 +1,8 @@
+[package]
+name = "fixture_app_warnings"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+exit_safely = { workspace = true}
+try_v2 = "0.3.4"
