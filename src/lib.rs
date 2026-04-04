@@ -81,9 +81,11 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
     let name = &ast.ident;
     let (impl_generics, ty_generics, where_clause) = &ast.generics.split_for_impl();
 
-    let Data::Enum(enum_data) = ast.data else {
-        todo!()
-    };
+    let enum_data = match ast.data {
+        Data::Enum(enum_data) => Ok(enum_data),
+        _ => DiagnosticResult::error("Termination can only be derived for an enum")
+            .add_help(name.span(), "not an enum"),
+    }?;
 
     let repr = ast
         .attrs
