@@ -1,0 +1,18 @@
+warning: use #[repr(u8)] to ensure valid exit codes
+ --> tests/fixtures/app/examples/fail_ReprU16.rs:9:1
+  |
+9 | #[repr(u16)]
+  | ^^^^^^^^^^^^
+  |
+note: this warning originates from the macro invocation here
+ --> tests/fixtures/app/examples/fail_ReprU16.rs:8:17
+  |
+8 | #[derive(Debug, Termination, Try, Try_ConvertResult)]
+  |                 ^^^^^^^^^^^
+  = note: this warning originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0425]: cannot find value `fail` in this scope
+  --> tests/fixtures/app/examples/fail_ReprU16.rs:16:5
+   |
+16 |     fail
+   |     ^^^^ not found in this scope

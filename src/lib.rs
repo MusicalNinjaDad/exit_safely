@@ -98,7 +98,11 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         {
             Ok(())
         }
-        Some(_) => todo!("better warning for other reprs"),
+        Some(_) => DiagnosticResult::warn_spanned(
+            (),
+            repr.span(),
+            "use #[repr(u8)] to ensure valid exit codes",
+        ),
         None => {
             let span = enum_data
                 .enum_token
