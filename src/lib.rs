@@ -1,3 +1,4 @@
+#![feature(if_let_guard)]
 #![feature(iterator_try_collect)]
 
 //! `exit_safely` provides a simple and highly transparent option to `derive(Termination)` from
@@ -83,35 +84,34 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
     let Data::Enum(enum_data) = ast.data else {
         todo!()
     };
-
-    let attributes = ast.attrs;
-    if attributes.is_empty()
-        || attributes
-            .iter()
-            .find(|attr| {
-                let attr_path = attr.meta.path();
-                if attr_path.is_ident(&format_ident!("repr"))
-                    && let Meta::List(ml) = &attr.meta
-                    && ml.parse_args::<Ident>().is_ok_and(|repr| repr == format_ident!("u8"))
-                {
-                    true
-                } else {
-                    false
-                }
-            })
-            .is_none()
-    {
-        let span = enum_data
-            .enum_token
-            .span()
-            .join(enum_data.brace_token.span.open())
-            .expect("opening brace");
-        DiagnosticResult::warn_spanned(
-            (),
-            span,
-            "add #[repr(u8)] above this to allow for valid error codes",
-        )?
+    
+    let repr = ast.attrs
+        .iter()
+        .find(|attr| attr.meta.path().is_ident(&format_ident!("repr")));
+    let warning = match repr {
+        Some(repr)
+            if let Meta::List(ml) = &repr.meta
+                && ml
+                    .parse_args::<Ident>()
+                    .is_ok_and(|repr| repr == format_ident!("u8")) =>
+        {
+            Ok(())
+        }
+        Some(_) => todo!("better warning for other reprs"),
+        None => {
+            let span = enum_data
+                .enum_token
+                .span()
+                .join(enum_data.brace_token.span.open())
+                .expect("opening brace");
+            DiagnosticResult::warn_spanned(
+                (),
+                span,
+                "add #[repr(u8)] above this to allow for valid error codes",
+            )
+        }
     };
+    warning?;
 
     let success_variant = &enum_data.variants[0].ident; //TODO: validate field type & discriminant
     let silent_fail_variants = enum_data
