@@ -27,6 +27,7 @@ quote = "1.0.45"
 [dev-dependencies]
 escargot = "0.5.15"
 try_v2 = "0.3.4"
+trybuild = "1.0.116"
 
 [workspace]
 members = ["tests/fixtures/*"]
