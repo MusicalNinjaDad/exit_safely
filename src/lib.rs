@@ -90,7 +90,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .attrs
         .iter()
         .find(|attr| attr.meta.path().is_ident(&format_ident!("repr")));
-    let warning = match repr {
+    let repr_u8 = match repr {
         Some(repr)
             if let Meta::List(ml) = &repr.meta
                 && ml
@@ -117,7 +117,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             )
         }
     };
-    warning?;
+    repr_u8?;
 
     let success_variant = &enum_data.variants[0].ident; //TODO: validate field type & discriminant
     let silent_fail_variants = enum_data
