@@ -53,9 +53,9 @@
 //! See the integration tests or readme for a full example
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
-use proc_macro2_diagnostic::{DiagnosticResult::Ok, DiagnosticStream};
-use quote::quote;
-use syn::{Data, DeriveInput};
+use proc_macro2_diagnostic::{DiagnosticResult::{self, Ok}, DiagnosticStream};
+use quote::{format_ident, quote};
+use syn::{Data, DeriveInput, spanned::Spanned};
 
 #[proc_macro_derive(Termination)]
 /// Derives Termination.
@@ -77,6 +77,15 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
 
     let Data::Enum(enum_data) = ast.data else {
         todo!()
+    };
+
+    let attributes = ast.attrs.clone();
+    if attributes.is_empty() || attributes.iter().find(|attr| {
+        let attr_path = attr.meta.path();
+        attr_path.is_ident(&format_ident!("repr"))
+    }).is_none() {
+        let span = enum_data.enum_token.span().join(enum_data.brace_token.span.open()).expect("opening brace");
+        DiagnosticResult::warn_spanned((), span, "add #[repr(u8)] above this to allow for valid error codes")?
     };
 
     let success_variant = &enum_data.variants[0].ident; //TODO: validate field type & discriminant
