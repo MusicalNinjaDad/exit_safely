@@ -119,13 +119,6 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
     };
     repr_u8?;
 
-    let success_variant = &enum_data.variants[0].ident; //TODO: validate field type & discriminant
-    let silent_fail_variants = enum_data
-        .variants
-        .iter()
-        .skip(1)
-        .filter(|variant| variant.fields.is_empty())
-        .map(|variant| variant.ident.clone());
     let get_discriminant = |variant: &Variant| {
         variant
             .discriminant
@@ -138,6 +131,15 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             })
             .map(|tuple| tuple.1)
     };
+
+    let success_variant = &enum_data.variants[0].ident; //TODO: validate field type & discriminant
+    
+    let silent_fail_variants = enum_data
+        .variants
+        .iter()
+        .skip(1)
+        .filter(|variant| variant.fields.is_empty())
+        .map(|variant| variant.ident.clone());
     let silent_fail_discriminants: Vec<_> = enum_data
         .variants
         .iter()
@@ -145,6 +147,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .filter(|variant| variant.fields.is_empty())
         .map(get_discriminant)
         .try_collect()?;
+    
     let fail_message_variants = enum_data
         .variants
         .iter()
@@ -158,6 +161,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .filter(|variant| !variant.fields.is_empty())
         .map(get_discriminant)
         .try_collect()?;
+    
     Ok(quote! {
         impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
             fn report(self) -> std::process::ExitCode {
