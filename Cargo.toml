@@ -21,6 +21,7 @@ proc-macro = true
 [dependencies]
 syn = "2.0.117"
 proc-macro2 = "1.0.106"
+proc_macro2_diagnostic = "0.1.0"
 quote = "1.0.45"
 
 [dev-dependencies]

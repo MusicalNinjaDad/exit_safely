@@ -53,6 +53,7 @@
 //! See the integration tests or readme for a full example
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
+use proc_macro2_diagnostic::{DiagnosticResult::Ok, DiagnosticStream};
 use quote::quote;
 use syn::{Data, DeriveInput};
 
@@ -68,7 +69,7 @@ pub fn termination_derive(input: TokenStream1) -> TokenStream1 {
     impl_termination(input.into()).into()
 }
 
-fn impl_termination(input: TokenStream2) -> TokenStream2 {
+fn impl_termination(input: TokenStream2) -> DiagnosticStream {
     let ast: DeriveInput = syn::parse2(input).unwrap();
 
     let name = &ast.ident;
@@ -90,7 +91,7 @@ fn impl_termination(input: TokenStream2) -> TokenStream2 {
         .iter()
         .skip(1)
         .filter(|variant| variant.fields.is_empty())
-        .map(|variant| variant.discriminant.clone().unwrap().1);
+        .map(|variant| variant.discriminant.clone().expect("discriminant ID").1);
     let fail_message_variants = enum_data
         .variants
         .iter()
@@ -102,9 +103,9 @@ fn impl_termination(input: TokenStream2) -> TokenStream2 {
         .iter()
         .skip(1)
         .filter(|variant| !variant.fields.is_empty())
-        .map(|variant| variant.discriminant.clone().unwrap().1);
+        .map(|variant| variant.discriminant.clone().expect("discriminant ID").1);
 
-    quote! {
+    Ok(quote! {
         impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
             fn report(self) -> std::process::ExitCode {
                 match self {
@@ -118,7 +119,7 @@ fn impl_termination(input: TokenStream2) -> TokenStream2 {
                 }
             }
         }
-    }
+    })
 }
 
 #[cfg(test)]
@@ -159,7 +160,7 @@ mod tests {
         };
         assert_eq!(
             expected_impl.to_string(),
-            impl_termination(original).to_string()
+            impl_termination(original).unwrap().to_string()
         );
     }
 }
