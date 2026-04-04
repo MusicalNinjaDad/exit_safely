@@ -60,7 +60,7 @@ use proc_macro2_diagnostic::{
     DiagnosticStream,
 };
 use quote::{format_ident, quote};
-use syn::{Data, DeriveInput, Variant, spanned::Spanned};
+use syn::{Data, DeriveInput, Ident, Meta, Variant, spanned::Spanned};
 
 #[proc_macro_derive(Termination)]
 /// Derives Termination.
@@ -84,13 +84,20 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         todo!()
     };
 
-    let attributes = ast.attrs.clone();
+    let attributes = ast.attrs;
     if attributes.is_empty()
         || attributes
             .iter()
             .find(|attr| {
                 let attr_path = attr.meta.path();
-                attr_path.is_ident(&format_ident!("repr"))
+                if attr_path.is_ident(&format_ident!("repr"))
+                    && let Meta::List(ml) = &attr.meta
+                    && ml.parse_args::<Ident>().is_ok_and(|repr| repr == format_ident!("u8"))
+                {
+                    true
+                } else {
+                    false
+                }
             })
             .is_none()
     {
