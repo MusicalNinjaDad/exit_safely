@@ -84,8 +84,9 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
     let Data::Enum(enum_data) = ast.data else {
         todo!()
     };
-    
-    let repr = ast.attrs
+
+    let repr = ast
+        .attrs
         .iter()
         .find(|attr| attr.meta.path().is_ident(&format_ident!("repr")));
     let warning = match repr {
