@@ -1,0 +1,60 @@
+error: Termination requires the Ok variant to store a single value implementing `Termination`
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:14:17
+   |
+14 | #[derive(Debug, Termination)]
+   |                 ^^^^^^^^^^^
+   |
+help: add `(T)` after this
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:17:5
+   |
+17 |     Ok = 0,
+   |     ^^
+   = note: this error originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Termination requires the Ok variant to store a single unnamed value implementing `Termination`
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:21:17
+   |
+21 | #[derive(Debug, Termination)]
+   |                 ^^^^^^^^^^^
+   |
+help: change this to `(T)`
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:24:8
+   |
+24 |     Ok { outcome: T } = 0,
+   |        ^^^^^^^^^^^^^^
+   = note: this error originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Termination requires the Ok variant to store a single unnamed value implementing `Termination`
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:28:17
+   |
+28 | #[derive(Debug, Termination)]
+   |                 ^^^^^^^^^^^
+   |
+help: change this to `(T)`
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:31:7
+   |
+31 |     Ok(T, u8) = 0,
+   |       ^^^^^^^
+   = note: this error originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0425]: cannot find value `fail` in this scope
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:36:5
+   |
+36 |     fail
+   |     ^^^^ not found in this scope
+
+error[E0599]: no method named `report` found for type parameter `T` in the current scope
+ --> tests/fixtures/app/examples/fail_InvalidOk.rs:7:17
+  |
+7 | #[derive(Debug, Termination)]
+  |                 ^^^^^^^^^^^ method not found in `T`
+8 | #[repr(u8)]
+9 | enum NotTermination<T> {
+  |                     - method `report` not found for this type parameter
+  |
+  = help: items from traits can only be used if the type parameter is bounded by the trait
+  = note: this error originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: the following trait defines an item `report`, perhaps you need to restrict type parameter `T` with it:
+  |
+9 | enum NotTermination<T: Termination> {
+  |                      +++++++++++++

@@ -61,7 +61,7 @@ use proc_macro2_diagnostic::{
     DiagnosticStream,
 };
 use quote::{format_ident, quote};
-use syn::{Data, DeriveInput, Ident, Meta, Variant, spanned::Spanned};
+use syn::{Data, DeriveInput, Fields, Ident, Meta, Variant, spanned::Spanned};
 
 #[proc_macro_derive(Termination)]
 /// Derives Termination.
@@ -132,8 +132,30 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             .map(|tuple| tuple.1)
     };
 
-    let success_variant = &enum_data.variants[0].ident; //TODO: validate field type & discriminant
-    
+    let success_variant = enum_data.variants.first().ok_or(
+        DiagnosticResult::error("Termination requires at least an Ok variant")
+            .add_help(enum_data.brace_token.span.span(), "add `Ok(T) = 0` here"),
+    )?;
+
+    let check_success_variant = match &success_variant.fields {
+        Fields::Unnamed(fields) if fields.unnamed.len() == 1 => Ok(()),
+        Fields::Named(fields) => DiagnosticResult::error(
+            "Termination requires the Ok variant to store a single unnamed value implementing `Termination`"
+            )
+            .add_help(fields.span(), "change this to `(T)`"),
+        Fields::Unnamed(fields) => DiagnosticResult::error(
+            "Termination requires the Ok variant to store a single unnamed value implementing `Termination`"
+            )
+            .add_help(fields.span(), "change this to `(T)`"),
+        Fields::Unit => DiagnosticResult::error(
+            "Termination requires the Ok variant to store a single value implementing `Termination`"
+            )
+            .add_help(success_variant.ident.span(), "add `(T)` after this"),
+    };
+
+    check_success_variant?;
+
+    let success_variant = &success_variant.ident;
     let silent_fail_variants = enum_data
         .variants
         .iter()
@@ -147,7 +169,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .filter(|variant| variant.fields.is_empty())
         .map(get_discriminant)
         .try_collect()?;
-    
+
     let fail_message_variants = enum_data
         .variants
         .iter()
@@ -161,7 +183,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .filter(|variant| !variant.fields.is_empty())
         .map(get_discriminant)
         .try_collect()?;
-    
+
     Ok(quote! {
         impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
             fn report(self) -> std::process::ExitCode {
