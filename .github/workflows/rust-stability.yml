@@ -1,4 +1,4 @@
-name: Rust
+name: Monthly stability checks
 
 on:
   workflow_dispatch:
@@ -14,9 +14,11 @@ env:
     RUSTC_BOOTSTRAP: 1
 
 jobs:
+  
 
   test:
     strategy:
+      fail-fast: false
       matrix:
         channel: ["stable", "beta", "nightly"]
     runs-on: ubuntu-latest
@@ -30,6 +32,7 @@ jobs:
 
   lint:
     strategy:
+      fail-fast: false
       matrix:
         channel: ["stable", "beta", "nightly"]
     runs-on: ubuntu-latest
@@ -39,15 +42,18 @@ jobs:
     - uses: actions-rust-lang/setup-rust-toolchain@v1
       with:
         toolchain: ${{ matrix.channel }}
+        components: "clippy"
     - name: clippy
       run: cargo clippy
 
   report:
-    if: needs.test.result == 'failure' || needs.lint.result == 'failure'
+    if: ${{ always() }}
     needs: [test, lint]
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v6
     - name: Create issue on failure
+      if: ${{ needs.test.result == 'failure' || needs.lint.result == 'failure' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |

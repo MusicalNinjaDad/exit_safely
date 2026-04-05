@@ -1,3 +1,4 @@
+#![allow(stable_features)]
 #![feature(never_type)]
 #![feature(try_trait_v2)]
 use exit_safely::Termination;
