@@ -1,4 +1,4 @@
-name: Rust
+name: Monthly stability checks
 
 on:
   workflow_dispatch:
