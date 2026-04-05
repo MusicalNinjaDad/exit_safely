@@ -1,0 +1,54 @@
+name: Rust
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 6 * *'
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+    CARGO_TERM_COLOR: always
+    RUSTC_BOOTSTRAP: 1
+
+jobs:
+
+  test:
+    strategy:
+      matrix:
+        channel: ["stable", "beta", "nightly"]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        toolchain: ${{ matrix.channel }}
+    - name: Run tests
+      run: cargo test
+
+  lint:
+    strategy:
+      matrix:
+        channel: ["stable", "beta", "nightly"]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        toolchain: ${{ matrix.channel }}
+    - name: clippy
+      run: cargo clippy
+
+  report:
+    if: needs.test.result == 'failure' || needs.lint.result == 'failure'
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create issue on failure
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh issue create --title "Monthly tests failed" --body "Run ID: $GITHUB_RUN_ID" --assignee "MusicalNinjaDad"

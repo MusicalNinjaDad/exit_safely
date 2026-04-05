@@ -44,7 +44,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - name: fmt
-      run: cargo fmt --check
     - name: clippy
       run: cargo clippy
+
+  fmt:
+    needs: skip_check
+    if: needs.skip_check.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+    - name: fmt
+      run: cargo fmt --check
