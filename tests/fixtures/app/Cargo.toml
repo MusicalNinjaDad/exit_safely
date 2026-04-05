@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-exit_safely ={ path = "../.." }
-try_v2 = "0.2.0"
+exit_safely = { workspace = true}
+try_v2 = "0.3.4"

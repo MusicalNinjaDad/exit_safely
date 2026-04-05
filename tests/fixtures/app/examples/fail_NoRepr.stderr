@@ -1,0 +1,25 @@
+warning: add #[repr(u8)] above this to allow for valid error codes
+ --> tests/fixtures/app/examples/fail_NoRepr.rs:9:1
+  |
+9 | enum NoRepr<T: _T> {
+  | ^^^^^^^^^^^^^^^^^^^^
+  |
+note: this warning originates from the macro invocation here
+ --> tests/fixtures/app/examples/fail_NoRepr.rs:8:17
+  |
+8 | #[derive(Debug, Termination, Try, Try_ConvertResult)]
+  |                 ^^^^^^^^^^^
+  = note: this warning originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Termination requires explicit discriminants to specify the correct ExitCodes
+  --> tests/fixtures/app/examples/fail_NoRepr.rs:8:17
+   |
+ 8 | #[derive(Debug, Termination, Try, Try_ConvertResult)]
+   |                 ^^^^^^^^^^^
+   |
+help: add `= n` after this
+  --> tests/fixtures/app/examples/fail_NoRepr.rs:10:5
+   |
+10 |     Ok(T),
+   |     ^^^^^
+   = note: this error originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
