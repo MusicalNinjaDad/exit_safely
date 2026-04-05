@@ -54,6 +54,23 @@
 //! ```
 //!
 //! See the integration tests or readme for a full example
+//! 
+//! > 🔬 **Stability**
+//! >
+//! > This crate makes use of the following experimental features:
+//! >
+//! > - `#![feature(if_let_guard)]` ([tracking issue](https://github.com/rust-lang/rust/issues/51114))
+//! > - `#![feature(iterator_try_collect)]` ([tracking issue](https://github.com/rust-lang/rust/issues/94047))
+//! > - `#![feature(never_type)]` ([tracking issue](https://github.com/rust-lang/rust/issues/35121))
+//! > - `#![feature(proc_macro_diagnostic)]` ([tracking issue](https://github.com/rust-lang/rust/issues/54140))
+//! > - `#![feature(try_trait_v2)]` ([tracking issue](https://github.com/rust-lang/rust/issues/84277))
+//! >
+//! > Since `Termination` works best for types which also implement `Try`, we hope this is
+//! > acceptable to you.
+//! >
+//! > The authors consider all of the above features to be reliable and already well advanced in the
+//! > stabilisation process. Nevertheless, we run automated tests **every 6 weeks** to ensure no
+//! > fundamental changes affect this crate.
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
 use proc_macro2_diagnostic::{
