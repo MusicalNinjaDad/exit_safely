@@ -5,6 +5,10 @@ on:
   push: 
     tags: "v*"
 
+env:
+    CARGO_TERM_COLOR: always
+    RUSTC_BOOTSTRAP: 1
+
 jobs:
   quality-check:
     uses: ./.github/workflows/rust.yml
