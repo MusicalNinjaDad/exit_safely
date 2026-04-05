@@ -101,8 +101,6 @@ fn main() -> Exit<()> {
 > - `#![feature(proc_macro_diagnostic)]` ([tracking issue](https://github.com/rust-lang/rust/issues/54140))
 > - `#![feature(try_trait_v2)]` ([tracking issue](https://github.com/rust-lang/rust/issues/84277))
 >
-> Since `Termination` works best for types which also implement `Try`, we hope this is acceptable to you.
+> Since `Termination` works best for types which also implement the experimental `Try`, we hope this is acceptable to you.
 >
-> The authors consider all of the above features to be reliable and already well advanced in the
-> stabilisation process. Nevertheless, we run automated tests **every 6 weeks** to ensure no
-> fundamental changes affect this crate.
+> The authors consider all of the above features to be reliable and already well advanced in the stabilisation process. Nevertheless, we run automated tests **every 6 weeks** to ensure no  fundamental changes affect this crate.
