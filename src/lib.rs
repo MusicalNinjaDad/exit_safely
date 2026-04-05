@@ -156,7 +156,8 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
     };
     check_success_variant_fields?;
 
-    if get_discriminant(success_variant)? != parse_quote!(0) {
+    let success_exit_code = get_discriminant(success_variant)?;
+    if  success_exit_code != parse_quote!(0) {
         let span_to_first_variant = enum_data
             .enum_token
             .span()

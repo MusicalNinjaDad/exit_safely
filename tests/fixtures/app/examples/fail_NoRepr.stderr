@@ -18,8 +18,8 @@ error: Termination requires explicit discriminants to specify the correct ExitCo
    |                 ^^^^^^^^^^^
    |
 help: add `= n` after this
-  --> tests/fixtures/app/examples/fail_NoRepr.rs:11:5
+  --> tests/fixtures/app/examples/fail_NoRepr.rs:10:5
    |
-11 |     Fail,
-   |     ^^^^
+10 |     Ok(T),
+   |     ^^^^^
    = note: this error originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
