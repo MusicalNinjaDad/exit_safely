@@ -103,4 +103,4 @@ fn main() -> Exit<()> {
 >
 > Since `Termination` works best for types which also implement the experimental `Try`, we hope this is acceptable to you.
 >
-> The authors consider all of the above features to be reliable and already well advanced in the stabilisation process. Nevertheless, we run automated tests **every 6 weeks** to ensure no  fundamental changes affect this crate.
+> The authors consider all of the above features to be reliable and already well advanced in the stabilisation process. Nevertheless, we run automated tests **every 6 weeks** to ensure no fundamental changes affect this crate.
