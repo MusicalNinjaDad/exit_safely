@@ -54,7 +54,7 @@
 //! ```
 //!
 //! See the integration tests or readme for a full example
-//! 
+//!
 //! > 🔬 **Stability**
 //! >
 //! > This crate makes use of the following experimental features:
