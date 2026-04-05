@@ -32,6 +32,13 @@ enum TooManyUnnamedFields<T: _T> {
     Fail = 1,
 }
 
+#[derive(Debug, Termination)]
+#[repr(u8)]
+enum NotExitCodeZero<T: _T> {
+    Ok(T) = 1,
+    Fail = 2,
+}
+
 fn main() {
     fail
 }

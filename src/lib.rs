@@ -61,7 +61,7 @@ use proc_macro2_diagnostic::{
     DiagnosticStream,
 };
 use quote::{format_ident, quote};
-use syn::{Data, DeriveInput, Fields, Ident, Meta, Variant, spanned::Spanned};
+use syn::{Data, DeriveInput, Fields, Ident, Meta, Variant, parse_quote, spanned::Spanned};
 
 #[proc_macro_derive(Termination)]
 /// Derives Termination.
@@ -90,7 +90,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .attrs
         .iter()
         .find(|attr| attr.meta.path().is_ident(&format_ident!("repr")));
-    let repr_u8 = match repr {
+    let check_valid_repr = match repr {
         Some(repr)
             if let Meta::List(ml) = &repr.meta
                 && ml
@@ -117,7 +117,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             )
         }
     };
-    repr_u8?;
+    check_valid_repr?;
 
     let get_discriminant = |variant: &Variant| {
         variant
@@ -137,8 +137,10 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             .add_help(enum_data.brace_token.span.span(), "add `Ok(T) = 0` here"),
     )?;
 
-    let check_success_variant = match &success_variant.fields {
-        Fields::Unnamed(fields) if fields.unnamed.len() == 1 => Ok(()),
+    let check_success_variant_fields = match &success_variant.fields {
+        Fields::Unnamed(fields)
+            if fields.unnamed.len() == 1
+            => Ok(()),
         Fields::Named(fields) => DiagnosticResult::error(
             "Termination requires the Ok variant to store a single unnamed value implementing `Termination`"
             )
@@ -152,10 +154,30 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             )
             .add_help(success_variant.ident.span(), "add `(T)` after this"),
     };
+    check_success_variant_fields?;
 
-    check_success_variant?;
+    if get_discriminant(success_variant)? != parse_quote!(0) {
+        let span_to_first_variant = enum_data
+            .enum_token
+            .span()
+            .join(success_variant.span())
+            .expect("same source file");
+        let span_of_discriminant_value = success_variant
+            .discriminant
+            .as_ref()
+            .expect("guaranteed discriminant")
+            .1
+            .span();
+        return DiagnosticResult::error("Termination requires an explicit success variant")
+            .add_help(
+                span_to_first_variant,
+                "Did you forget to add a success variant here ...",
+            )
+            .add_help(span_of_discriminant_value, "...or should this be 0?");
+    };
 
     let success_variant = &success_variant.ident;
+
     let silent_fail_variants = enum_data
         .variants
         .iter()

@@ -37,10 +37,29 @@ help: change this to `(T)`
    |       ^^^^^^^
    = note: this error originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0425]: cannot find value `fail` in this scope
-  --> tests/fixtures/app/examples/fail_InvalidOk.rs:36:5
+error: Termination requires an explicit success variant
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:35:17
    |
-36 |     fail
+35 | #[derive(Debug, Termination)]
+   |                 ^^^^^^^^^^^
+   |
+help: Did you forget to add a success variant here ...
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:37:1
+   |
+37 | / enum NotExitCodeZero<T: _T> {
+38 | |     Ok(T) = 1,
+   | |_____________^
+help: ...or should this be 0?
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:38:13
+   |
+38 |     Ok(T) = 1,
+   |             ^
+   = note: this error originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0425]: cannot find value `fail` in this scope
+  --> tests/fixtures/app/examples/fail_InvalidOk.rs:43:5
+   |
+43 |     fail
    |     ^^^^ not found in this scope
 
 error[E0599]: no method named `report` found for type parameter `T` in the current scope
