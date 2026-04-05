@@ -1,7 +1,3 @@
-#![feature(assert_matches)]
-#![feature(never_type)]
-#![feature(try_trait_v2)]
-
 use std::{path::PathBuf, process::Command};
 
 use escargot::CargoBuild;

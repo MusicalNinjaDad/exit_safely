@@ -1,3 +1,4 @@
+#![allow(stable_features)]
 #![feature(if_let_guard)]
 #![feature(iterator_try_collect)]
 
