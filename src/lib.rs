@@ -1,3 +1,4 @@
+#![feature(if_let_guard)]
 #![feature(iterator_try_collect)]
 
 //! `exit_safely` provides a simple and highly transparent option to `derive(Termination)` from
