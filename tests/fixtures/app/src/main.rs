@@ -1,6 +1,7 @@
 #![allow(stable_features)]
 #![feature(never_type)]
 #![feature(try_trait_v2)]
+#![feature(try_trait_v2_residual)]
 use exit_safely::Termination;
 use try_v2::*;
 
@@ -9,6 +10,7 @@ use std::io;
 use std::process::Termination as _T; // Needed as trait bound for Exit
 
 #[derive(Debug, Termination, Try, Try_ConvertResult)]
+#[must_use]
 #[repr(u8)]
 enum Exit<T: _T> {
     Ok(T) = 0,

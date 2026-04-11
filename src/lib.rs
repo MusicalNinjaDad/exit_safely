@@ -36,10 +36,12 @@
 //! ```rust
 //! #![feature(never_type)]
 //! #![feature(try_trait_v2)]
+//! #![feature(try_trait_v2_residual)]
 //! use exit_safely::Termination;
 //! use try_v2::*;
 //!
 //! #[derive(Debug, Termination, Try, Try_ConvertResult)]
+//! #[must_use]
 //! #[repr(u8)]
 //! enum Exit<T: std::process::Termination> {
 //!     Ok(T) = 0,
