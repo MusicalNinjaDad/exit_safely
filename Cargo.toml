@@ -10,10 +10,7 @@ homepage = "https://github.com/MusicalNinjaDad/exit_safely"
 repository = "https://github.com/MusicalNinjaDad/exit_safely"
 categories = ["development-tools", "rust-patterns"]
 license = "MIT"
-include = [
-    "/src/",
-    "/tests/"
-]
+exclude = [".github", ".devcontainer"]
 
 [lib]
 proc-macro = true
