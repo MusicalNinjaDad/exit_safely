@@ -1,6 +1,6 @@
-#![allow(stable_features)]
-#![feature(if_let_guard)]
+#![cfg_attr(not(stable_if_let_guard), feature(if_let_guard))]
 #![feature(iterator_try_collect)]
+#![cfg_attr(not(stable_let_chains), feature(let_chains))]
 
 //! `exit_safely` provides a simple and highly transparent option to `derive(Termination)` from
 //! your own enum with a very simple API which still provides you full control over exit codes
