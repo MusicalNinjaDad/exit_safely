@@ -11,6 +11,7 @@ repository = "https://github.com/MusicalNinjaDad/exit_safely"
 categories = ["development-tools", "rust-patterns"]
 license = "MIT"
 exclude = [".github", ".devcontainer"]
+rust-version = "1.88.0"
 
 [lib]
 proc-macro = true
