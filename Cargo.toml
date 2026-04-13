@@ -1,6 +1,6 @@
 [package]
 name = "exit_safely"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 readme = "README.md"
 description = "Enables exiting safely with custom exit codes while still calling `Drop` as needed. Aims for minimal magic and maximum flexibilty."
@@ -24,7 +24,7 @@ quote = "1.0.45"
 
 [dev-dependencies]
 escargot = "0.5.15"
-try_v2 = "0.3.4"
+try_v2 = "0.4.2"
 trybuild = "1.0.116"
 
 [build-dependencies]
