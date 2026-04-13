@@ -76,10 +76,7 @@
 //! > fundamental changes affect this crate.
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
-use proc_macro2_diagnostic::{
-    DiagnosticResult::{self, Ok},
-    DiagnosticStream,
-};
+use proc_macro2_diagnostic::prelude::*;
 use quote::{format_ident, quote};
 use syn::{Data, DeriveInput, Fields, Ident, Meta, Variant, parse_quote, spanned::Spanned};
 
@@ -102,7 +99,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
     let (impl_generics, ty_generics, where_clause) = &ast.generics.split_for_impl();
 
     let Data::Enum(enum_data) = &ast.data else {
-        return DiagnosticResult::error("Termination can only be derived for an enum")
+        return error("Termination can only be derived for an enum")
             .add_help(name.span(), "not an enum");
     };
 
@@ -119,7 +116,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         {
             Ok(())
         }
-        Some(_) => DiagnosticResult::warn_spanned(
+        Some(_) => warn_spanned(
             (),
             repr.span(),
             "use #[repr(u8)] to ensure valid exit codes",
@@ -130,7 +127,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
                 .span()
                 .join(enum_data.brace_token.span.open())
                 .expect("opening brace");
-            DiagnosticResult::warn_spanned(
+            warn_spanned(
                 (),
                 span,
                 "add #[repr(u8)] above this to allow for valid error codes",
@@ -144,7 +141,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             .discriminant
             .clone()
             .ok_or_else(|| {
-                DiagnosticResult::error(
+                error(
                     "Termination requires explicit discriminants to specify the correct ExitCodes",
                 )
                 .add_help(variant.span(), "add `= n` after this")
@@ -153,7 +150,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
     };
 
     let success_variant = enum_data.variants.first().ok_or(
-        DiagnosticResult::error("Termination requires at least an Ok variant")
+        error("Termination requires at least an Ok variant")
             .add_help(enum_data.brace_token.span.span(), "add `Ok(T) = 0` here"),
     )?;
 
@@ -161,15 +158,15 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         Fields::Unnamed(fields)
             if fields.unnamed.len() == 1
             => Ok(()),
-        Fields::Named(fields) => DiagnosticResult::error(
+        Fields::Named(fields) => error(
             "Termination requires the Ok variant to store a single unnamed value implementing `Termination`"
             )
             .add_help(fields.span(), "change this to `(T)`"),
-        Fields::Unnamed(fields) => DiagnosticResult::error(
+        Fields::Unnamed(fields) => error(
             "Termination requires the Ok variant to store a single unnamed value implementing `Termination`"
             )
             .add_help(fields.span(), "change this to `(T)`"),
-        Fields::Unit => DiagnosticResult::error(
+        Fields::Unit => error(
             "Termination requires the Ok variant to store a single value implementing `Termination`"
             )
             .add_help(success_variant.ident.span(), "add `(T)` after this"),
@@ -189,7 +186,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             .expect("guaranteed discriminant")
             .1
             .span();
-        return DiagnosticResult::error("Termination requires an explicit success variant")
+        return error("Termination requires an explicit success variant")
             .add_help(
                 span_to_first_variant,
                 "Did you forget to add a success variant here ...",
