@@ -11,6 +11,7 @@ repository = "https://github.com/MusicalNinjaDad/exit_safely"
 categories = ["development-tools", "rust-patterns"]
 license = "MIT"
 exclude = [".github", ".devcontainer"]
+rust-version = "1.85.1"
 
 [lib]
 proc-macro = true
@@ -26,8 +27,12 @@ escargot = "0.5.15"
 try_v2 = "0.3.4"
 trybuild = "1.0.116"
 
+[build-dependencies]
+autocfg = {workspace = true }
+
 [workspace]
 members = ["tests/fixtures/*"]
 
 [workspace.dependencies]
 exit_safely = { path = "."}
+autocfg = "1.5.0"

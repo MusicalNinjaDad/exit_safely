@@ -1,1 +1,6 @@
 FROM ghcr.io/musicalninjas/pyo3-devcontainer:latest@sha256:fc4809c4168a560aab9de6d71a9256bee3194f6aef76d50e17eea21057e54ee3
+
+USER root
+RUN cargo binstall -y cargo-msrv
+
+USER 1000
