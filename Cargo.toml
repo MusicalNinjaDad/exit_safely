@@ -29,6 +29,7 @@ trybuild = "1.0.116"
 
 [build-dependencies]
 autocfg = {workspace = true }
+ninja-build_rs = "0.1.0"
 
 [workspace]
 members = ["tests/fixtures/*"]
