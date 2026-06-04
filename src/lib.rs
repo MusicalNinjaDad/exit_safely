@@ -1,7 +1,3 @@
-#![cfg_attr(not(stable_if_let_guard), feature(if_let_guard))]
-#![feature(iterator_try_collect)]
-#![cfg_attr(not(stable_let_chains), feature(let_chains))]
-
 //! `exit_safely` provides a simple and highly transparent option to `derive(Termination)` from
 //! your own enum with a very simple API which still provides you full control over exit codes
 //! and what to (safely) output to stderr.
@@ -208,7 +204,8 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .skip(1)
         .filter(|variant| variant.fields.is_empty())
         .map(get_discriminant)
-        .try_collect()?;
+        // TODO: #63 Make this try_collect() when it gets stable
+        .collect::<Result<Vec<_>, _>>()?;
 
     let fail_message_variants = enum_data
         .variants
@@ -222,7 +219,8 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .skip(1)
         .filter(|variant| !variant.fields.is_empty())
         .map(get_discriminant)
-        .try_collect()?;
+        // TODO: #63 Make this try_collect() when it gets stable
+        .collect::<Result<Vec<_>, _>>()?;
 
     Ok(quote! {
         impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
