@@ -19,12 +19,12 @@ proc-macro = true
 [dependencies]
 syn = { version = "2.0.117", features = ["extra-traits"] }
 proc-macro2 = "1.0.106"
-proc_macro2_diagnostic = "0.3.0"
+proc_macro2_diagnostic = "0.4.0"
 quote = "1.0.45"
 
 [dev-dependencies]
 escargot = "0.5.15"
-try_v2 = "0.4.2"
+try_v2 = "0.7.1"
 trybuild = "1.0.116"
 
 [workspace]

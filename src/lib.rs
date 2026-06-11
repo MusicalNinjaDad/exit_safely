@@ -72,7 +72,7 @@
 //! > fundamental changes affect this crate.
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
-use proc_macro2_diagnostic::prelude::*;
+use proc_macro2_diagnostic::{ToTokens, prelude::*};
 use quote::{format_ident, quote};
 use syn::{Data, DeriveInput, Fields, Ident, Meta, Variant, parse_quote, spanned::Spanned};
 
@@ -85,7 +85,7 @@ use syn::{Data, DeriveInput, Fields, Ident, Meta, Variant, parse_quote, spanned:
 ///   - Generic parameter as type of the "Ok" case, which must implement std::process::Termination
 ///   - The data stored in any variants must implement Display
 pub fn termination_derive(input: TokenStream1) -> TokenStream1 {
-    impl_termination(input.into()).into()
+    impl_termination(input.into()).to_tokens()
 }
 
 fn impl_termination(input: TokenStream2) -> DiagnosticStream {
