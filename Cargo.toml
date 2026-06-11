@@ -18,13 +18,13 @@ proc-macro = true
 
 [dependencies]
 syn = { version = "2.0.117", features = ["extra-traits"] }
+try_v2 = "0.7.3"
 proc-macro2 = "1.0.106"
-proc_macro2_diagnostic = "0.5.0"
+proc_macro2_diagnostic = {version = "0.6.0", git = "https://github.com/MusicalNinjaDad/proc_macro2_diagnostic", branch = "traits"}
 quote = "1.0.45"
 
 [dev-dependencies]
 escargot = "0.5.15"
-try_v2 = "0.7.1"
 trybuild = "1.0.116"
 
 [workspace]
