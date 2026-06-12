@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-exit_safely = { workspace = true}
+exit_safely = { workspace = true }
 try_v2 = { workspace = true }
+try_v2_derive = "0.7.5"
