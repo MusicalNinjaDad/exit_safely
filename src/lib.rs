@@ -26,32 +26,41 @@
 //! }
 //! ```
 //!
-//! For use in `main()` you will probably also want to derive `Debug` and `Try`
+//! For the best use in `main()` you will probably also want to derive `Debug` and `Try`
 //! (via [try_v2](https://docs.rs/try_v2/latest/try_v2/)):
 //!
 //! ```rust
 //! #![cfg_attr(unstable_never_type, feature(never_type))]
 //! #![cfg_attr(unstable_try_trait_v2, feature(try_trait_v2))]
 //! #![cfg_attr(unstable_try_trait_v2_residual, feature(try_trait_v2_residual))]
+//! use std::process::Termination as _T;
 //! use exit_safely::Termination;
 //! # #[cfg(has_try_trait_v2)]
-//! use try_v2::*;
+//! use try_v2::{Try, Try_ConvertResult};
 //!
+//! // First define your exit codes:
 //! # #[cfg(has_try_trait_v2)]
 //! #[derive(Debug, Termination, Try, Try_ConvertResult)]
 //! #[must_use]
 //! #[repr(u8)]
-//! enum Exit<T: std::process::Termination> {
+//! enum Exit<T: _T> {
 //!     Ok(T) = 0,
 //!     Error(String) = 1,
 //!     InvocationError(String) = 2,
+//! }
+//!
+//! // Then any conversion:
+//! impl<T: _T> From<clap::Error> for Exit<T> {
+//!     fn from(err: clap::Error) -> Self {
+//!         Self::InvocationError(err.to_string())
+//!     }
 //! }
 //!
 //! # #[cfg(not(has_try_trait_v2))]
 //! # #[derive(Debug, Termination)]
 //! # #[must_use]
 //! # #[repr(u8)]
-//! # enum Exit<T: std::process::Termination> {
+//! # enum Exit<T: _T> {
 //! #     Ok(T) = 0,
 //! #     Error(String) = 1,
 //! #     InvocationError(String) = 2,
