@@ -3,6 +3,10 @@ name = "fixture_app"
 version = "0.1.0"
 edition = "2024"
 
+[[bin]]
+name = "fixture_app"
+path = "src/main.rs"
+
 [dependencies]
 exit_safely = { workspace = true }
 try_v2 = { workspace = true }
