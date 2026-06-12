@@ -29,7 +29,7 @@
 //! For use in `main()` you will probably also want to derive `Debug` and `Try`
 //! (via [try_v2](https://docs.rs/try_v2/latest/try_v2/)):
 //!
-//! ```rust
+//! ```rust ignore
 //! #![feature(never_type)]
 //! #![feature(try_trait_v2)]
 //! #![feature(try_trait_v2_residual)]
