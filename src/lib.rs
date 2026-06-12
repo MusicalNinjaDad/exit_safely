@@ -29,7 +29,7 @@
 //! For use in `main()` you will probably also want to derive `Debug` and `Try`
 //! (via [try_v2](https://docs.rs/try_v2/latest/try_v2/)):
 //!
-//! ```rust
+//! ```rust ignore
 //! #![feature(never_type)]
 //! #![feature(try_trait_v2)]
 //! #![feature(try_trait_v2_residual)]
@@ -72,9 +72,10 @@
 //! > fundamental changes affect this crate.
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
-use proc_macro2_diagnostic::prelude::*;
+use proc_macro2_diagnostic::{ToDiagnostic, ToTokens, prelude::*};
 use quote::{format_ident, quote};
 use syn::{Data, DeriveInput, Fields, Ident, Meta, Variant, parse_quote, spanned::Spanned};
+use try_v2::Transform;
 
 #[proc_macro_derive(Termination)]
 /// Derives Termination.
@@ -85,7 +86,7 @@ use syn::{Data, DeriveInput, Fields, Ident, Meta, Variant, parse_quote, spanned:
 ///   - Generic parameter as type of the "Ok" case, which must implement std::process::Termination
 ///   - The data stored in any variants must implement Display
 pub fn termination_derive(input: TokenStream1) -> TokenStream1 {
-    impl_termination(input.into()).into()
+    impl_termination(input.into()).to_tokens()
 }
 
 fn impl_termination(input: TokenStream2) -> DiagnosticStream {
@@ -136,19 +137,18 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         variant
             .discriminant
             .clone()
-            .ok_or_else(|| {
-                error(
-                    "Termination requires explicit discriminants to specify the correct ExitCodes",
-                )
-                .add_help(variant.span(), "add `= n` after this")
-            })
+            .or_error(
+                "Termination requires explicit discriminants to specify the correct ExitCodes",
+            )
+            .add_help(variant.span(), "add `= n` after this")
             .map(|tuple| tuple.1)
     };
 
-    let success_variant = enum_data.variants.first().ok_or(
-        error("Termination requires at least an Ok variant")
-            .add_help(enum_data.brace_token.span.span(), "add `Ok(T) = 0` here"),
-    )?;
+    let success_variant = enum_data
+        .variants
+        .first()
+        .or_error("Termination requires at least an Ok variant")
+        .add_help(enum_data.brace_token.span.span(), "add `Ok(T) = 0` here")?;
 
     let check_success_variant_fields = match &success_variant.fields {
         Fields::Unnamed(fields)
@@ -205,7 +205,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .filter(|variant| variant.fields.is_empty())
         .map(get_discriminant)
         // TODO: #63 Make this try_collect() when it gets stable
-        .collect::<Result<Vec<_>, _>>()?;
+        .collect::<DiagnosticResult<Vec<_>>>()?;
 
     let fail_message_variants = enum_data
         .variants
@@ -220,7 +220,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
         .filter(|variant| !variant.fields.is_empty())
         .map(get_discriminant)
         // TODO: #63 Make this try_collect() when it gets stable
-        .collect::<Result<Vec<_>, _>>()?;
+        .collect::<DiagnosticResult<Vec<_>>>()?;
 
     Ok(quote! {
         impl #impl_generics std::process::Termination for #name #ty_generics #where_clause {
