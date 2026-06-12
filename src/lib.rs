@@ -12,20 +12,6 @@
 //! recommended to ... simply return a type implementing Termination ... from the main function
 //! and avoid this function altogether"
 //!
-//! ## Example usage:
-//! ```rust
-//! use exit_safely::Termination;
-//! use std::process::Termination as _Termination;
-//!
-//! #[derive(Termination)]
-//! #[repr(u8)]
-//! enum Exit<T: _Termination> {
-//!     Ok(T) = 0,
-//!     Error(String) = 1,
-//!     InvocationError(String) = 2,
-//! }
-//! ```
-//!
 //! ## Example on nightly
 //!
 //! For the best use in `main()` you will probably also want to derive `Debug` and `Try`
@@ -37,7 +23,6 @@
 //! #![cfg_attr(unstable_try_trait_v2_residual, feature(try_trait_v2_residual))]
 //! use std::process::Termination as _T;
 //! use exit_safely::Termination;
-//! # #[cfg(has_try_trait_v2)]
 //! use try_v2::{Try, Try_ConvertResult};
 //!
 //! /// First define your exit codes:
