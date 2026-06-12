@@ -26,6 +26,8 @@
 //! }
 //! ```
 //!
+//! ## Example on nightly
+//!
 //! For the best use in `main()` you will probably also want to derive `Debug` and `Try`
 //! (via [try_v2](https://docs.rs/try_v2/latest/try_v2/)):
 //!
@@ -57,7 +59,7 @@
 //!         Self::InvocationError(err.to_string())
 //!     }
 //! }
-//! 
+//!
 //! # #[cfg(not(has_try_trait_v2))]
 //! # #[derive(Debug, Termination)]
 //! # #[must_use]
@@ -102,7 +104,61 @@
 //!
 //! ```
 //!
-//! See the integration tests or readme for a full example
+//! ## Example on stable
+//!
+//! If you prefer not to use a nightly toolchain then `exit_safely` still works fine, although
+//! you cannot leverage the power of `?` just yet. The same example looks more like the pattern
+//! if you used std::process::exit (or go)
+//!
+//! ```rust
+//! use std::process::Termination as _T;
+//! use exit_safely::Termination;
+//!
+//! // First define your exit codes:
+//! #[derive(Debug, Termination)]
+//! #[must_use]
+//! #[repr(u8)]
+//! enum Exit<T: _T> {
+//!     Ok(T) = 0,
+//!     Error(String) = 1,
+//!     InvocationError(String) = 2,
+//! }
+//!
+//! // Then any conversion:
+//! /// clap errors return exit_code 2 & output the details
+//! /// to stderr, letting clap handle formatting
+//! impl<T: _T> From<clap::Error> for Exit<T> {
+//!     fn from(err: clap::Error) -> Self {
+//!         Self::InvocationError(err.to_string())
+//!     }
+//! }
+//!
+//! # struct Cli {}
+//! # impl Cli {
+//! #     fn try_parse() -> Result<Self, clap::Error> {
+//! #         Ok(Cli {})
+//! #     }
+//! # }
+//! # fn process<I: IntoIterator>(v: I) {}
+//! #
+//! fn main() -> Exit<()> {
+//!     // Match on results and use into to return the right exit code for the error type
+//!     let cli = match Cli::try_parse() {
+//!         Ok(cli) => cli,
+//!         Err(e) => return e.into(), // or `Exit::from(e)` if you prefer
+//!     };
+//!
+//!     # let mut inputs = [4].into_iter();
+//!     // let else converts a missing value to an exit
+//!     let Some(value) = inputs.next() else {
+//!         return Exit::Error("Not enough input, need more cheese".to_string())
+//!     };
+//!
+//!     process(inputs);
+//!     Exit::Ok(())
+//! }
+//!
+//! ```
 //!
 //! > 🔬 **Stability**
 //! >
@@ -120,6 +176,7 @@
 //! > The authors consider all of the above features to be reliable and already well advanced in the
 //! > stabilisation process. Nevertheless, we run automated tests **every month** to ensure no
 //! > fundamental changes affect this crate.
+
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
 use proc_macro2_diagnostic::{ToDiagnostic, ToTokens, prelude::*};
