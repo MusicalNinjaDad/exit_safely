@@ -29,13 +29,15 @@
 //! For use in `main()` you will probably also want to derive `Debug` and `Try`
 //! (via [try_v2](https://docs.rs/try_v2/latest/try_v2/)):
 //!
-//! ```rust ignore
-//! #![feature(never_type)]
-//! #![feature(try_trait_v2)]
-//! #![feature(try_trait_v2_residual)]
+//! ```rust
+//! #![cfg_attr(unstable_never_type, feature(never_type))]
+//! #![cfg_attr(unstable_try_trait_v2, feature(try_trait_v2))]
+//! #![cfg_attr(unstable_try_trait_v2_residual, feature(try_trait_v2_residual))]
 //! use exit_safely::Termination;
+//! # #[cfg(has_try_trait_v2)]
 //! use try_v2::*;
 //!
+//! # #[cfg(has_try_trait_v2)]
 //! #[derive(Debug, Termination, Try, Try_ConvertResult)]
 //! #[must_use]
 //! #[repr(u8)]
@@ -44,6 +46,16 @@
 //!     Error(String) = 1,
 //!     InvocationError(String) = 2,
 //! }
+//!
+//! # #[cfg(not(has_try_trait_v2))]
+//! # #[derive(Debug, Termination)]
+//! # #[must_use]
+//! # #[repr(u8)]
+//! # enum Exit<T: std::process::Termination> {
+//! #     Ok(T) = 0,
+//! #     Error(String) = 1,
+//! #     InvocationError(String) = 2,
+//! # }
 //!
 //! fn main() -> Exit<()> {
 //!     // Use either `?` or return `Exit::...` to exit early from your code ...
