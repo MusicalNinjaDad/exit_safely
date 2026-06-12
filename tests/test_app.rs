@@ -1,13 +1,18 @@
-#![cfg(has_try_trait_v2)]
 use std::{path::PathBuf, process::Command};
 
 use escargot::CargoBuild;
 
 use std::sync::LazyLock;
+
+#[cfg(has_try_trait_v2)]
+const APP_PATH: &str = "./tests/fixtures/app/Cargo.toml";
+#[cfg(not(has_try_trait_v2))]
+const APP_PATH: &str = "./tests/fixtures/no_try/Cargo.toml";
+
 static APP: LazyLock<PathBuf> = LazyLock::new(|| {
     CargoBuild::new()
         .bin("fixture_app")
-        .manifest_path("./tests/fixtures/app/Cargo.toml")
+        .manifest_path(APP_PATH)
         .current_release()
         .run()
         .unwrap()
