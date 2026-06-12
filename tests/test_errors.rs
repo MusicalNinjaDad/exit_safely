@@ -1,3 +1,4 @@
+#![cfg(has_proc_macro_diagnostic)]
 use trybuild::TestCases;
 
 #[test]
