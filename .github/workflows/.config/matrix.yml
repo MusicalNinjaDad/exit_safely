@@ -1,0 +1,19 @@
+full:
+  fail-fast: false
+  matrix:
+    channel: ["stable", "beta", "nightly"]
+    bootstrap: ["0", "1"]
+    exclude:
+      - channel: "nightly"
+        bootstrap: "0"
+
+minimal:
+  fail-fast: false
+  matrix:
+    channel: ["stable", "nightly"]
+    bootstrap: ["0", "1"]
+    exclude:
+      - channel: "stable"
+        bootstrap: "1"
+      - channel: "nightly"
+        bootstrap: "0"

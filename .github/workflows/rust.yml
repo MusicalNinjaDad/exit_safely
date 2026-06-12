@@ -24,16 +24,37 @@ jobs:
         with:
           concurrent_skipping: 'same_content_newer'
 
+  channels:
+    runs-on: ubuntu-latest
+    outputs:
+      strategy: ${{ steps.strategy.outputs.strategy }}
+    steps:
+    - uses: actions/checkout@v6
+    - name: install jaq
+      uses: taiki-e/install-action@v2.79.5
+      with:
+        tool: jaq
+    - name: process strategy
+      id: strategy
+      run: echo "strategy=$(jaq -c .minimal .github/workflows/config/matrix.yml)" >> $GITHUB_OUTPUT
+
   test:
-    needs: skip_check
+    needs:
+      - skip_check
+      - channels
     if: needs.skip_check.outputs.should_skip != 'true'
+
+    strategy: ${{ fromJson(needs.channels.outputs.strategy) }}
+    env:
+      RUSTC_BOOTSTRAP: ${{ matrix.bootstrap }}
 
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v6
+    - run: rustup install --profile default ${{ matrix.channel }}
     - name: Run tests
-      run: cargo test
+      run: cargo +${{ matrix.channel }} test
 
   lint:
     needs: skip_check
@@ -43,8 +64,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+    - run: rustup install --profile default ${{ matrix.channel }}
     - name: clippy
-      run: cargo clippy
+      run: cargo +${{ matrix.channel }} clippy -- --deny warnings
 
   fmt:
     needs: skip_check
