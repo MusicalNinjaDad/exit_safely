@@ -52,6 +52,7 @@
 //! #         Ok(Cli {})
 //! #     }
 //! # }
+//! # #[cfg(has_try_trait_v2)]
 //! # impl From<i32> for Exit<()> {
 //! #     fn from(value: i32) -> Self {
 //! #         Exit::Ok(())
@@ -78,6 +79,8 @@
 //!     // or simply return `Exit::...`
 //!     // Exit::Ok(())
 //! }
+//! # #[cfg(not(has_try_trait_v2))]
+//! # fn main() {}
 //! ```
 //!
 //! ## Example on stable
