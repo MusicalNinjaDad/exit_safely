@@ -6,15 +6,24 @@ updates:
     - "/tests/fixtures/*"
   schedule:
     interval: "daily"
+  cooldown:
+    default-days: 10
 - package-ecosystem: "docker"
   directory: "/.devcontainer"
   schedule:
     interval: "daily"
+  cooldown:
+    default-days: 10
 - package-ecosystem: "devcontainers"
   directory: "/"
   schedule:
     interval: "daily"
+  cooldown:
+    default-days: 10
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
-    interval: "daily"
+    interval: "weekly"
+    day: "wednesday"
+  cooldown:
+    default-days: 10
