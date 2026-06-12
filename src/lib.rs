@@ -2,7 +2,7 @@
 //! your own enum with a very simple API which still provides you full control over exit codes
 //! and what to (safely) output to stderr.
 //!
-//! Minimal magic, maximum flexibilty, zero boilerplate.
+//! Minimal magic, maximum flexibility, zero boilerplate.
 //!
 //! ## Why?
 //!
@@ -12,69 +12,168 @@
 //! recommended to ... simply return a type implementing Termination ... from the main function
 //! and avoid this function altogether"
 //!
-//! ## Example usage:
-//! ```rust
-//! use exit_safely::Termination;
-//! use std::process::Termination as _Termination;
+//! ## Example on nightly
 //!
-//! #[derive(Termination)]
-//! #[repr(u8)]
-//! enum Exit<T: _Termination> {
-//!     Ok(T) = 0,
-//!     Error(String) = 1,
-//!     InvocationError(String) = 2,
-//! }
-//! ```
-//!
-//! For use in `main()` you will probably also want to derive `Debug` and `Try`
+//! For the best use in `main()` you will probably also want to derive `Debug` and `Try`
 //! (via [try_v2](https://docs.rs/try_v2/latest/try_v2/)):
 //!
-//! ```rust ignore
-//! #![feature(never_type)]
-//! #![feature(try_trait_v2)]
-//! #![feature(try_trait_v2_residual)]
+//! ```rust
+//! #![cfg_attr(unstable_never_type, feature(never_type))]
+//! #![cfg_attr(unstable_try_trait_v2, feature(try_trait_v2))]
+//! #![cfg_attr(unstable_try_trait_v2_residual, feature(try_trait_v2_residual))]
+//! use std::process::Termination as _T;
 //! use exit_safely::Termination;
-//! use try_v2::*;
+//! # #[cfg(has_try_trait_v2)]
+//! use try_v2::{Try, Try_ConvertResult};
 //!
+//! # #[cfg(has_try_trait_v2)]
+//! /// First define your exit codes:
 //! #[derive(Debug, Termination, Try, Try_ConvertResult)]
 //! #[must_use]
 //! #[repr(u8)]
-//! enum Exit<T: std::process::Termination> {
+//! enum Exit<T: _T> {
 //!     Ok(T) = 0,
 //!     Error(String) = 1,
 //!     InvocationError(String) = 2,
 //! }
 //!
-//! fn main() -> Exit<()> {
-//!     // Use either `?` or return `Exit::...` to exit early from your code ...
-//!     Exit::Ok(())
+//! # #[cfg(has_try_trait_v2)]
+//! /// Then any conversion:
+//! /// clap errors return exit_code 2 & output the details
+//! /// to stderr, letting clap handle formatting
+//! impl<T: _T> From<clap::Error> for Exit<T> {
+//!     fn from(err: clap::Error) -> Self {
+//!         Self::InvocationError(err.to_string())
+//!     }
 //! }
+//! # struct Cli {}
+//! # impl Cli {
+//! #     fn try_parse() -> Result<Self, clap::Error> {
+//! #         Ok(Cli {})
+//! #     }
+//! # }
+//! # #[cfg(has_try_trait_v2)]
+//! # impl From<i32> for Exit<()> {
+//! #     fn from(value: i32) -> Self {
+//! #         Exit::Ok(())
+//! #     }
+//! # }
+//! # fn process<I: IntoIterator>(v: I) -> Result<i32, clap::Error> {
+//! #    Ok(5)
+//! # }
+//! #
+//! # #[cfg(has_try_trait_v2)]
+//! fn main() -> Exit<()> {
+//!     // Use `?` to return the right exit code for the error type
+//!     let cli = Cli::try_parse()?;
 //!
+//!     # let mut inputs = [4].into_iter();
+//!     // ok_or()? converts a missing value to an exit
+//!     let value = inputs
+//!         .next()
+//!         .ok_or(Exit::Error("Not enough input, need more cheese".to_string()))?;
+//!
+//!     // if your central processing returns a value which might be invalid
+//!     Exit::from(process(inputs)?)
+//!
+//!     // or simply return `Exit::...`
+//!     // Exit::Ok(())
+//! }
+//! # #[cfg(not(has_try_trait_v2))]
+//! # fn main() {}
 //! ```
 //!
-//! See the integration tests or readme for a full example
+//! ## Example on stable
+//!
+//! If you prefer not to use a nightly toolchain then `exit_safely` still works fine, although
+//! you cannot leverage the power of `?` just yet. The same example looks more like the pattern
+//! if you used std::process::exit (or go)
+//!
+//! ```rust
+//! use std::process::Termination as _T;
+//! use exit_safely::Termination;
+//!
+//! /// First define your exit codes:
+//! #[derive(Debug, Termination)]
+//! #[must_use]
+//! #[repr(u8)]
+//! enum Exit<T: _T> {
+//!     Ok(T) = 0,
+//!     Error(String) = 1,
+//!     InvocationError(String) = 2,
+//! }
+//!
+//! /// Then any conversion:
+//! /// clap errors return exit_code 2 & output the details
+//! /// to stderr, letting clap handle formatting
+//! impl<T: _T> From<clap::Error> for Exit<T> {
+//!     fn from(err: clap::Error) -> Self {
+//!         Self::InvocationError(err.to_string())
+//!     }
+//! }
+//!
+//! # struct Cli {}
+//! # impl Cli {
+//! #     fn try_parse() -> Result<Self, clap::Error> {
+//! #         Ok(Cli {})
+//! #     }
+//! # }
+//! # fn process<I: IntoIterator>(v: I) {}
+//! #
+//! fn main() -> Exit<()> {
+//!     // Match on `Results` and use `into` to return the right exit code for the error type
+//!     let cli = match Cli::try_parse() {
+//!         Ok(cli) => cli,
+//!         Err(e) => return e.into(), // or `Exit::from(e)` if you prefer
+//!     };
+//!
+//!     # let mut inputs = [4].into_iter();
+//!     // `let ... else` converts a missing value to an exit
+//!     let Some(value) = inputs.next() else {
+//!         return Exit::Error("Not enough input, need more cheese".to_string())
+//!     };
+//!
+//!     process(inputs);
+//!     Exit::Ok(())
+//! }
+//! ```
 //!
 //! > 🔬 **Stability**
 //! >
-//! > This crate makes use of the following experimental features:
+//! > This crate makes use of the following experimental features if they are available but
+//! > **does not require** any experimental features to work.
 //! >
-//! > - [`#![feature(if_let_guard)]`](https://github.com/rust-lang/rust/issues/51114)
-//! > - [`#![feature(iterator_try_collect)]`](https://github.com/rust-lang/rust/issues/94047)
-//! > - [`#![feature(never_type)]`](https://github.com/rust-lang/rust/issues/35121)
+//! > ### For improved compiler errors
+//! >
 //! > - [`#![feature(proc_macro_diagnostic)]`](https://github.com/rust-lang/rust/issues/54140)
+//! >
+//! > To provide nicer compiler errors with "help", "notes" and a warning if you forget the repr(u8)
+//! >
+//! > On current stable help & notes are output as extra errors, but warnings are not possible
+//! >
+//! > ### Recommended: try_trait_v2, try_trait_v2_residual & never_type
+//! >
+//! > - [`#![feature(never_type)]`](https://github.com/rust-lang/rust/issues/35121)
 //! > - [`#![feature(try_trait_v2)]`](https://github.com/rust-lang/rust/issues/84277)
+//! > - [`#![feature(try_trait_v2_residual)]`](https://github.com/rust-lang/rust/issues/91285)
 //! >
-//! > Since `Termination` works best for types which also implement the experimental `Try`,
-//! > we hope this is acceptable to you.
+//! > I find the ergonomics work best for types which also implement the experimental `Try` and
+//! > created the crate [`try_v2`](https://crates.io/crates/try_v2) to make it easy for you to
+//! > take advantage.
 //! >
-//! > The authors consider all of the above features to be reliable and already well advanced in the
-//! > stabilisation process. Nevertheless, we run automated tests **every month** to ensure no
-//! > fundamental changes affect this crate.
+//! > I consider all of the above features to be reliable and already well advanced in the
+//! > stabilisation process. Nevertheless, I run automated tests **every month** and on every PR
+//! > against stable, beta & nightly to ensure no fundamental changes affect this crate. I get a
+//! > direct notification on my phone for any failures.
+//! >
+//! > Feel free to check out the build script, workflows and source to see how I do this.
+
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
 use proc_macro2_diagnostic::{ToDiagnostic, ToTokens, prelude::*};
 use quote::{format_ident, quote};
 use syn::{Data, DeriveInput, Fields, Ident, Meta, Variant, parse_quote, spanned::Spanned};
+#[cfg(has_try_trait_v2)]
 use try_v2::Transform;
 
 #[proc_macro_derive(Termination)]

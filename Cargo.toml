@@ -3,7 +3,7 @@ name = "exit_safely"
 version = "0.3.0"
 edition = "2024"
 readme = "README.md"
-description = "Enables exiting safely with custom exit codes while still calling `Drop` as needed. Aims for minimal magic and maximum flexibilty."
+description = "exit safely with custom exit codes while still calling `Drop` as needed. Aims for minimal magic and maximum flexibilty."
 authors = ["Mike Foster <https://github.com/MusicalNinjaDad>"]
 keywords = ["derive", "ExitCode", "Drop", "Termination", "CLI"]
 homepage = "https://github.com/MusicalNinjaDad/exit_safely"
@@ -24,8 +24,13 @@ proc_macro2_diagnostic = "0.6.3"
 quote = "1.0.45"
 
 [dev-dependencies]
+clap = { version = "4.6.1", default-features = false, features = ["std"] }
 escargot = "0.5.15"
 trybuild = "1.0.116"
+
+[build-dependencies]
+autocfg = { workspace = true }
+ninja-build_rs = { workspace = true }
 
 [workspace]
 members = ["tests/fixtures/*"]
@@ -33,4 +38,6 @@ members = ["tests/fixtures/*"]
 [workspace.dependencies]
 exit_safely = { path = "." }
 
+autocfg = "1.5.1"
+ninja-build_rs = "0.1.2"
 try_v2 = "0.8.0"
