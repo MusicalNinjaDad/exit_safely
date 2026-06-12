@@ -13,6 +13,7 @@ permissions:
 
 env:
     CARGO_TERM_COLOR: always
+    RUSTC_BOOTSTRAP: 1
 
 jobs:
 
@@ -21,12 +22,6 @@ jobs:
       fail-fast: false
       matrix:
         channel: ["stable", "beta", "nightly"]
-        bootstrap: ["0", "1"]
-        exclude:
-        - channel: "nightly"
-          bootstrap: "1"
-    env:
-      RUSTC_BOOTSTRAP: ${{ matrix.bootstrap }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
