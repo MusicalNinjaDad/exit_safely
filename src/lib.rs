@@ -50,14 +50,14 @@
 //! }
 //!
 //! // Then any conversion:
+//! /// clap errors return exit_code 2 & output the details
+//! /// to stderr, letting clap handle formatting
 //! impl<T: _T> From<clap::Error> for Exit<T> {
 //!     fn from(err: clap::Error) -> Self {
-//!         // clap errors should give exit_code 2 & output the details
-//!         // to stderr, letting clap handle formatting
 //!         Self::InvocationError(err.to_string())
 //!     }
 //! }
-//!
+//! 
 //! # #[cfg(not(has_try_trait_v2))]
 //! # #[derive(Debug, Termination)]
 //! # #[must_use]
@@ -67,24 +67,21 @@
 //! #     Error(String) = 1,
 //! #     InvocationError(String) = 2,
 //! # }
-//!
 //! # struct Cli {}
 //! # impl Cli {
 //! #     fn try_parse() -> Result<Self, clap::Error> {
 //! #         Ok(Cli {})
 //! #     }
 //! # }
-//!
 //! # impl From<i32> for Exit<()> {
 //! #     fn from(value: i32) -> Self {
 //! #         Exit::Ok(())
 //! #     }
 //! # }
-//!
 //! # fn process<I: IntoIterator>(v: I) -> Result<i32, clap::Error> {
 //! #    Ok(5)
 //! # }
-//!
+//! #
 //! fn main() -> Exit<()> {
 //!     // Use `?` to return the right exit code for the error type
 //!     let cli = Cli::try_parse()?;
