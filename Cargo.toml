@@ -27,10 +27,16 @@ quote = "1.0.45"
 escargot = "0.5.15"
 trybuild = "1.0.116"
 
+[build-dependencies]
+autocfg = { workspace = true }
+ninja-build_rs = { workspace = true }
+
 [workspace]
 members = ["tests/fixtures/*"]
 
 [workspace.dependencies]
 exit_safely = { path = "." }
 
+autocfg = "1.5.1"
+ninja-build_rs = "0.1.2"
 try_v2 = "0.8.0"

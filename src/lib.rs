@@ -75,6 +75,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use proc_macro2_diagnostic::{ToDiagnostic, ToTokens, prelude::*};
 use quote::{format_ident, quote};
 use syn::{Data, DeriveInput, Fields, Ident, Meta, Variant, parse_quote, spanned::Spanned};
+#[cfg(has_try_trait_v2)]
 use try_v2::Transform;
 
 #[proc_macro_derive(Termination)]
