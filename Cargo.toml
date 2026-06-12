@@ -20,7 +20,7 @@ proc-macro = true
 syn = { version = "2.0.117", features = ["extra-traits"] }
 try_v2 = { workspace = true }
 proc-macro2 = "1.0.106"
-proc_macro2_diagnostic = "0.6.2"
+proc_macro2_diagnostic = "0.6.3"
 quote = "1.0.45"
 
 [dev-dependencies]
@@ -33,4 +33,4 @@ members = ["tests/fixtures/*"]
 [workspace.dependencies]
 exit_safely = { path = "." }
 
-try_v2 = { version = "0.7.5", default-features = false }
+try_v2 = "0.8.0"
