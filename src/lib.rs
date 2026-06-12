@@ -121,14 +121,14 @@
 //! # fn process<I: IntoIterator>(v: I) {}
 //! #
 //! fn main() -> Exit<()> {
-//!     // Match on results and use into to return the right exit code for the error type
+//!     // Match on `Results` and use `into` to return the right exit code for the error type
 //!     let cli = match Cli::try_parse() {
 //!         Ok(cli) => cli,
 //!         Err(e) => return e.into(), // or `Exit::from(e)` if you prefer
 //!     };
 //!
 //!     # let mut inputs = [4].into_iter();
-//!     // let else converts a missing value to an exit
+//!     // `let ... else` converts a missing value to an exit
 //!     let Some(value) = inputs.next() else {
 //!         return Exit::Error("Not enough input, need more cheese".to_string())
 //!     };
