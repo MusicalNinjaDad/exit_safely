@@ -4,7 +4,7 @@
 your own enum with a very simple API which still provides you full control over exit codes
 and what to (safely) output to stderr.
 
-Minimal magic, maximum flexibilty, zero boilerplate.
+Minimal magic, maximum flexibility, zero boilerplate.
 
 ## Why?
 
