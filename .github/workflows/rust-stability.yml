@@ -13,33 +13,52 @@ permissions:
 
 env:
     CARGO_TERM_COLOR: always
-    RUSTC_BOOTSTRAP: 1
 
 jobs:
-
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        channel: ["stable", "beta", "nightly"]
+  
+  channels:
     runs-on: ubuntu-latest
+    outputs:
+      strategy: ${{ steps.strategy.outputs.strategy }}
     steps:
     - uses: actions/checkout@v6
-    - name: update rust
-      run: rustup update
+    - name: install jaq
+      uses: taiki-e/install-action@v2.79.5
+      with:
+        tool: jaq
+    - name: process strategy
+      id: strategy
+      run: echo "strategy=$(jaq -c .full .github/workflows/.config/matrix.yml)" >> $GITHUB_OUTPUT
+
+  test:
+    needs:
+      - channels
+
+    strategy: ${{ fromJson(needs.channels.outputs.strategy) }}
+    env:
+      RUSTC_BOOTSTRAP: ${{ matrix.bootstrap }}
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v6
+    - run: rustup install --profile default ${{ matrix.channel }}
     - name: Run tests
       run: cargo +${{ matrix.channel }} test --no-fail-fast
 
   lint:
-    strategy:
-      fail-fast: false
-      matrix:
-        channel: ["stable", "beta", "nightly"]
+    needs:
+      - channels
+
+    strategy: ${{ fromJson(needs.channels.outputs.strategy) }}
+    env:
+      RUSTC_BOOTSTRAP: ${{ matrix.bootstrap }}
+
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v6
-    - name: update rust
-      run: rustup update && rustup component add --toolchain ${{ matrix.channel }} clippy
+    - run: rustup install --profile default ${{ matrix.channel }}
     - name: clippy
       run: cargo +${{ matrix.channel }} clippy -- --deny warnings
 
