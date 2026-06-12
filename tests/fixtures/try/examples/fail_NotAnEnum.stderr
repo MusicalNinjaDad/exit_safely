@@ -1,11 +1,11 @@
 error: Termination can only be derived for an enum
- --> tests/fixtures/app/examples/fail_NotAnEnum.rs:3:17
+ --> tests/fixtures/try/examples/fail_NotAnEnum.rs:3:17
   |
 3 | #[derive(Debug, Termination)]
   |                 ^^^^^^^^^^^
   |
 help: not an enum
- --> tests/fixtures/app/examples/fail_NotAnEnum.rs:4:8
+ --> tests/fixtures/try/examples/fail_NotAnEnum.rs:4:8
   |
 4 | struct AStruct {
   |        ^^^^^^^

@@ -5,7 +5,7 @@ use escargot::CargoBuild;
 use std::sync::LazyLock;
 
 #[cfg(has_try_trait_v2)]
-const APP_PATH: &str = "./tests/fixtures/app/Cargo.toml";
+const APP_PATH: &str = "./tests/fixtures/try/Cargo.toml";
 #[cfg(not(has_try_trait_v2))]
 const APP_PATH: &str = "./tests/fixtures/no_try/Cargo.toml";
 
