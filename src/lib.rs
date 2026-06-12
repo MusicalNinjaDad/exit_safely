@@ -52,6 +52,8 @@
 //! // Then any conversion:
 //! impl<T: _T> From<clap::Error> for Exit<T> {
 //!     fn from(err: clap::Error) -> Self {
+//!         // clap errors should give exit_code 2 & output the details
+//!         // to stderr, letting clap handle formatting
 //!         Self::InvocationError(err.to_string())
 //!     }
 //! }
@@ -66,9 +68,39 @@
 //! #     InvocationError(String) = 2,
 //! # }
 //!
+//! # struct Cli {}
+//! # impl Cli {
+//! #     fn try_parse() -> Result<Self, clap::Error> {
+//! #         Ok(Cli {})
+//! #     }
+//! # }
+//!
+//! # impl From<i32> for Exit<()> {
+//! #     fn from(value: i32) -> Self {
+//! #         Exit::Ok(())
+//! #     }
+//! # }
+//!
+//! # fn process<I: IntoIterator>(v: I) -> Result<i32, clap::Error> {
+//! #    Ok(5)
+//! # }
+//!
 //! fn main() -> Exit<()> {
-//!     // Use either `?` or return `Exit::...` to exit early from your code ...
-//!     Exit::Ok(())
+//!     // Use `?` to return the right exit code for the error type
+//!     let cli = Cli::try_parse()?;
+//!
+//!     # let mut inputs = [4].into_iter();
+//!     // ok_or()? converts a missing value to an exit
+//!     let value = inputs
+//!         .next()
+//!         .ok_or(Exit::Error("Not enough input, need more cheese".to_string()))?;
+//!
+//!     // if your central processing returns a value which might be invalid
+//!     Exit::from(process(inputs)?)
+//!
+//!     // or simply return `Exit::...`
+//!     // Exit::Ok(())
+//!     
 //! }
 //!
 //! ```
