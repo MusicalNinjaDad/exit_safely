@@ -1,3 +1,4 @@
+#![cfg(has_try_trait_v2)]
 use std::{path::PathBuf, process::Command};
 
 use escargot::CargoBuild;
