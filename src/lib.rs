@@ -26,8 +26,8 @@
 //! # #[cfg(has_try_trait_v2)]
 //! use try_v2::{Try, Try_ConvertResult};
 //!
-//! /// First define your exit codes:
 //! # #[cfg(has_try_trait_v2)]
+//! /// First define your exit codes:
 //! #[derive(Debug, Termination, Try, Try_ConvertResult)]
 //! #[must_use]
 //! #[repr(u8)]
@@ -37,6 +37,7 @@
 //!     InvocationError(String) = 2,
 //! }
 //!
+//! # #[cfg(has_try_trait_v2)]
 //! /// Then any conversion:
 //! /// clap errors return exit_code 2 & output the details
 //! /// to stderr, letting clap handle formatting
@@ -45,16 +46,6 @@
 //!         Self::InvocationError(err.to_string())
 //!     }
 //! }
-//!
-//! # #[cfg(not(has_try_trait_v2))]
-//! # #[derive(Debug, Termination)]
-//! # #[must_use]
-//! # #[repr(u8)]
-//! # enum Exit<T: _T> {
-//! #     Ok(T) = 0,
-//! #     Error(String) = 1,
-//! #     InvocationError(String) = 2,
-//! # }
 //! # struct Cli {}
 //! # impl Cli {
 //! #     fn try_parse() -> Result<Self, clap::Error> {
@@ -70,6 +61,7 @@
 //! #    Ok(5)
 //! # }
 //! #
+//! # #[cfg(has_try_trait_v2)]
 //! fn main() -> Exit<()> {
 //!     // Use `?` to return the right exit code for the error type
 //!     let cli = Cli::try_parse()?;
