@@ -36,7 +36,7 @@ jobs:
         tool: jaq
     - name: process strategy
       id: strategy
-      run: echo "strategy=$(jaq -c .minimal .github/workflows/config/matrix.yml)" >> $GITHUB_OUTPUT
+      run: echo "strategy=$(jaq -c .minimal .github/workflows/.config/matrix.yml)" >> $GITHUB_OUTPUT
 
   test:
     needs:
