@@ -31,6 +31,6 @@ trybuild = "1.0.116"
 members = ["tests/fixtures/*"]
 
 [workspace.dependencies]
-exit_safely = { path = "."}
+exit_safely = { path = "." }
 
-try_v2 = "0.7.5"
+try_v2 = { version = "0.7.5", default-features = false }
