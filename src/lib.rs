@@ -23,6 +23,7 @@
 //! #![cfg_attr(unstable_try_trait_v2_residual, feature(try_trait_v2_residual))]
 //! use std::process::Termination as _T;
 //! use exit_safely::Termination;
+//! # #[cfg(has_try_trait_v2)]
 //! use try_v2::{Try, Try_ConvertResult};
 //!
 //! /// First define your exit codes:
