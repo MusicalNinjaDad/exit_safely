@@ -52,6 +52,8 @@ jobs:
         cargo publish
 
   github_release:
+    env:
+      GH_TOKEN: ${{ github.token }}
     permissions:
       attestations: write
       contents: write

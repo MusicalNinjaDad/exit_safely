@@ -1,5 +1,11 @@
 # exit_safely changelog
 
+## [v0.3.1] - Immutable releases
+
+## Bugfix
+
+- Create immutable release on github via workflow
+
 ## [v0.3.0] - Works on stable
 
 ### Technical changes
