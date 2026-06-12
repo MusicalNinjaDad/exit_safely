@@ -159,20 +159,33 @@
 //!
 //! > 🔬 **Stability**
 //! >
-//! > This crate makes use of the following experimental features:
+//! > This crate makes use of the following experimental features if they are available but
+//! > **does not require** any experimental features to work.
 //! >
-//! > - [`#![feature(if_let_guard)]`](https://github.com/rust-lang/rust/issues/51114)
-//! > - [`#![feature(iterator_try_collect)]`](https://github.com/rust-lang/rust/issues/94047)
-//! > - [`#![feature(never_type)]`](https://github.com/rust-lang/rust/issues/35121)
+//! > ### For improved compiler errors
+//! >
 //! > - [`#![feature(proc_macro_diagnostic)]`](https://github.com/rust-lang/rust/issues/54140)
+//! >
+//! > To provide nicer compiler errors with "help", "notes" and a warning if you forget the repr(u8)
+//! >
+//! > On current stable help & notes are output as extra errors, but warnings are not possible
+//! >
+//! > ### Recommended: try_trait_v2, try_trait_v2_residual & never_type
+//! >
+//! > - [`#![feature(never_type)]`](https://github.com/rust-lang/rust/issues/35121)
 //! > - [`#![feature(try_trait_v2)]`](https://github.com/rust-lang/rust/issues/84277)
+//! > - [`#![feature(try_trait_v2_residual)]`](https://github.com/rust-lang/rust/issues/91285)
 //! >
-//! > Since `Termination` works best for types which also implement the experimental `Try`,
-//! > we hope this is acceptable to you.
+//! > I find the ergonomics work best for types which also implement the experimental `Try` and
+//! > created the crate [`try_v2`](https://crates.io/crates/try_v2) to make it easy for you to
+//! > take advantage.
 //! >
-//! > The authors consider all of the above features to be reliable and already well advanced in the
-//! > stabilisation process. Nevertheless, we run automated tests **every month** to ensure no
-//! > fundamental changes affect this crate.
+//! > I consider all of the above features to be reliable and already well advanced in the
+//! > stabilisation process. Nevertheless, I run automated tests **every month** and on every PR
+//! > against stable, beta & nightly to ensure no fundamental changes affect this crate. I get a
+//! > direct notification on my phone for any failures.
+//! >
+//! > Feel free to check out the build script, workflows and source to see how I do this.
 
 use proc_macro::TokenStream as TokenStream1;
 use proc_macro2::TokenStream as TokenStream2;
