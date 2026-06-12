@@ -40,7 +40,7 @@
 //! # #[cfg(has_try_trait_v2)]
 //! use try_v2::{Try, Try_ConvertResult};
 //!
-//! // First define your exit codes:
+//! /// First define your exit codes:
 //! # #[cfg(has_try_trait_v2)]
 //! #[derive(Debug, Termination, Try, Try_ConvertResult)]
 //! #[must_use]
@@ -51,7 +51,7 @@
 //!     InvocationError(String) = 2,
 //! }
 //!
-//! // Then any conversion:
+//! /// Then any conversion:
 //! /// clap errors return exit_code 2 & output the details
 //! /// to stderr, letting clap handle formatting
 //! impl<T: _T> From<clap::Error> for Exit<T> {
@@ -99,9 +99,7 @@
 //!
 //!     // or simply return `Exit::...`
 //!     // Exit::Ok(())
-//!     
 //! }
-//!
 //! ```
 //!
 //! ## Example on stable
@@ -114,7 +112,7 @@
 //! use std::process::Termination as _T;
 //! use exit_safely::Termination;
 //!
-//! // First define your exit codes:
+//! /// First define your exit codes:
 //! #[derive(Debug, Termination)]
 //! #[must_use]
 //! #[repr(u8)]
@@ -124,7 +122,7 @@
 //!     InvocationError(String) = 2,
 //! }
 //!
-//! // Then any conversion:
+//! /// Then any conversion:
 //! /// clap errors return exit_code 2 & output the details
 //! /// to stderr, letting clap handle formatting
 //! impl<T: _T> From<clap::Error> for Exit<T> {
@@ -157,7 +155,6 @@
 //!     process(inputs);
 //!     Exit::Ok(())
 //! }
-//!
 //! ```
 //!
 //! > 🔬 **Stability**
