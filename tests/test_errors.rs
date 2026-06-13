@@ -4,5 +4,5 @@ use trybuild::TestCases;
 #[test]
 fn failures() {
     let t = TestCases::new();
-    t.compile_fail("examples/stable/examples/fail_*.rs");
+    t.compile_fail("./examples/nightly/examples/fail_*.rs");
 }
