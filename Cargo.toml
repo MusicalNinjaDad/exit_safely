@@ -33,7 +33,7 @@ autocfg = { workspace = true }
 ninja-build_rs = { workspace = true }
 
 [workspace]
-members = ["tests/fixtures/*"]
+members = ["examples/*"]
 
 [workspace.dependencies]
 exit_safely = { path = "." }

@@ -5,9 +5,9 @@ use escargot::CargoBuild;
 use std::sync::LazyLock;
 
 #[cfg(has_try_trait_v2)]
-const APP_PATH: &str = "./tests/fixtures/try/Cargo.toml";
+const APP_PATH: &str = "./examples/nightly/Cargo.toml";
 #[cfg(not(has_try_trait_v2))]
-const APP_PATH: &str = "./tests/fixtures/no_try/Cargo.toml";
+const APP_PATH: &str = "./examples/stable/Cargo.toml";
 
 static APP: LazyLock<PathBuf> = LazyLock::new(|| {
     CargoBuild::new()
