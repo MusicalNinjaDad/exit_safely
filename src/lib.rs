@@ -218,11 +218,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             "use #[repr(u8)] to ensure valid exit codes",
         ),
         None => {
-            let span = enum_data
-                .enum_token
-                .span()
-                .join(enum_data.brace_token.span.open())
-                .expect("opening brace");
+            let span = enum_data.enum_token.span();
             warn_spanned(
                 (),
                 span,

@@ -2,7 +2,7 @@ warning: add #[repr(u8)] above this to allow for valid error codes
  --> examples/nightly/examples/fail_NoRepr.rs:6:1
   |
 6 | enum NoRepr<T: _T> {
-  | ^^^^^^^^^^^^^^^^^^^^
+  | ^^^^
   |
 note: this warning originates from the macro invocation here
  --> examples/nightly/examples/fail_NoRepr.rs:5:17
