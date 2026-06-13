@@ -37,6 +37,4 @@ enum NotExitCodeZero<T: _T> {
     Fail = 2,
 }
 
-fn main() {
-    fail
-}
+fn main() {}

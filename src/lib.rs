@@ -218,11 +218,7 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             "use #[repr(u8)] to ensure valid exit codes",
         ),
         None => {
-            let span = enum_data
-                .enum_token
-                .span()
-                .join(enum_data.brace_token.span.open())
-                .expect("opening brace");
+            let span = enum_data.enum_token.span();
             warn_spanned(
                 (),
                 span,
@@ -270,11 +266,6 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
 
     let success_exit_code = get_discriminant(success_variant)?;
     if success_exit_code != parse_quote!(0) {
-        let span_to_first_variant = enum_data
-            .enum_token
-            .span()
-            .join(success_variant.span())
-            .expect("same source file");
         let span_of_discriminant_value = success_variant
             .discriminant
             .as_ref()
@@ -283,8 +274,8 @@ fn impl_termination(input: TokenStream2) -> DiagnosticStream {
             .span();
         return error("Termination requires an explicit success variant")
             .add_help(
-                span_to_first_variant,
-                "Did you forget to add a success variant here ...",
+                success_variant.span(),
+                "Did you forget to add a success variant before this ...",
             )
             .add_help(span_of_discriminant_value, "...or should this be 0?");
     };

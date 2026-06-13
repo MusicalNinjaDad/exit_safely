@@ -1,0 +1,5 @@
+error[E0425]: cannot find value `fail` in this scope
+  --> examples/stable/examples/fail_ReprU16.rs:13:5
+   |
+13 |     fail
+   |     ^^^^ not found in this scope

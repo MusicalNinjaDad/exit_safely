@@ -1,0 +1,13 @@
+error: Termination can only be derived for an enum
+ --> examples/stable/examples/fail_NotAnEnum.rs:3:17
+  |
+3 | #[derive(Debug, Termination)]
+  |                 ^^^^^^^^^^^
+  |
+  = note: this error originates in the derive macro `Termination` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: help: not an enum
+ --> examples/stable/examples/fail_NotAnEnum.rs:4:8
+  |
+4 | struct AStruct {
+  |        ^^^^^^^

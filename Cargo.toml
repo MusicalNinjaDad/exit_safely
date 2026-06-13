@@ -1,6 +1,6 @@
 [package]
 name = "exit_safely"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2024"
 readme = "README.md"
 description = "exit safely with custom exit codes while still calling `Drop` as needed. Aims for minimal magic and maximum flexibilty."
@@ -33,7 +33,7 @@ autocfg = { workspace = true }
 ninja-build_rs = { workspace = true }
 
 [workspace]
-members = ["tests/fixtures/*"]
+members = ["examples/*"]
 
 [workspace.dependencies]
 exit_safely = { path = "." }
