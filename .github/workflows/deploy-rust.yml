@@ -19,7 +19,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
     - name: install jaq
       uses: taiki-e/install-action@v2.81.10
       with:
@@ -38,7 +38,7 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
     # Install manually as different crates may have custom toolchains defined
     - name: install rust
       run: rustup set profile default && rustup install
@@ -62,6 +62,6 @@ jobs:
       - publish_lib
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - name: publish release
         run: gh release create ${{ needs.version.outputs.version }} --generate-notes
