@@ -29,9 +29,9 @@ jobs:
     outputs:
       strategy: ${{ steps.strategy.outputs.strategy }}
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
     - name: install jaq
-      uses: taiki-e/install-action@v2.81.10
+      uses: taiki-e/install-action@v2.82.2
       with:
         tool: jaq
     - name: process strategy
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
     - run: rustup install --profile default ${{ matrix.channel }}
     - name: Run tests
       run: cargo +${{ matrix.channel }} test --no-fail-fast
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
     - run: rustup install --profile default ${{ matrix.channel }}
     - name: clippy
       run: cargo +${{ matrix.channel }} clippy -- --deny warnings
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
     - name: fmt
       run: cargo fmt --check
 
@@ -92,9 +92,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
     - name: install cargo-msrv
-      uses: taiki-e/install-action@v2.81.10
+      uses: taiki-e/install-action@v2.82.2
       with:
         tool: cargo-msrv
     - name: check MSRV
