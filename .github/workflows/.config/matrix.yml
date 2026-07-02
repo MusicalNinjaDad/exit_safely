@@ -3,7 +3,6 @@ full:
   matrix:
     channel: ["stable", "beta", "nightly"]
     bootstrap: ["0", "1"]
-    rustflags: ["-Zallow-features=proc_macro_diagnostic", "-Zallow-features=never_type,try_trait_v2,try_trait_residual", ""]
     exclude:
       - channel: "nightly"
         bootstrap: "0"
