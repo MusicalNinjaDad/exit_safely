@@ -41,3 +41,6 @@ exit_safely = { path = "." }
 autocfg = "1.5.1"
 ninja-build_rs = "0.2.0"
 try_v2 = "0.9.1"
+
+[patch.crates-io]
+ninja-build_rs = { git = "https://github.com/MusicalNinjaDad/rust", branch="cargo_config"}
