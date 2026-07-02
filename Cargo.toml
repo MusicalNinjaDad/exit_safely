@@ -1,6 +1,6 @@
 [package]
 name = "exit_safely"
-version = "0.3.2"
+version = "0.3.3"
 edition = "2024"
 readme = "README.md"
 description = "exit safely with custom exit codes while still calling `Drop` as needed. Aims for minimal magic and maximum flexibilty."
