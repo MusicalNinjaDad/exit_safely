@@ -9,8 +9,9 @@ use std::io;
 
 use std::process::Termination as _T; // Needed as trait bound for Exit
 
-#[derive(Debug, Termination, Try, Try_ConvertResult)]
+#[derive(Debug, Termination, Try)]
 #[must_use]
+#[FromResidual(Result<_, Self::Residual>)]
 #[repr(u8)]
 enum Exit<T: _T> {
     Ok(T) = 0,
