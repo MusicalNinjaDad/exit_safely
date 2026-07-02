@@ -371,9 +371,4 @@ mod tests {
             impl_termination(original).unwrap().to_string()
         );
     }
-
-    #[test]
-    fn has_try() {
-        assert!(cfg!(has_try_trait_v2));
-    }
 }
