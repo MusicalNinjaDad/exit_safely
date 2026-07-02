@@ -1,5 +1,11 @@
 # exit_safely changelog
 
+## [v0.3.3] - Respect cargo.toml unstable.allow-features
+
+### Bugfix
+
+- Updated to `ninja-build_rs` v0.2.1
+
 ## [v0.3.2] - Stable examples
 
 ### Bugfix

@@ -24,11 +24,12 @@
 //! use std::process::Termination as _T;
 //! use exit_safely::Termination;
 //! # #[cfg(has_try_trait_v2)]
-//! use try_v2::{Try, Try_ConvertResult};
+//! use try_v2::Try;
 //!
 //! # #[cfg(has_try_trait_v2)]
 //! /// First define your exit codes:
-//! #[derive(Debug, Termination, Try, Try_ConvertResult)]
+//! #[derive(Debug, Termination, Try)]
+//! #[FromResidual(Result<_, Self::Residual>)]
 //! #[must_use]
 //! #[repr(u8)]
 //! enum Exit<T: _T> {
