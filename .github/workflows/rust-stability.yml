@@ -23,7 +23,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7.0.0
     - name: install jaq
-      uses: taiki-e/install-action@v2.82.9
+      uses: taiki-e/install-action@v2.83.2
       with:
         tool: jaq
     - name: process strategy
