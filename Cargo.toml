@@ -29,8 +29,7 @@ escargot = "0.5.15"
 trybuild = "1.0.116"
 
 [build-dependencies]
-autocfg = { workspace = true }
-ninja-build_rs = { workspace = true }
+build_safely = { workspace = true }
 
 [workspace]
 members = ["examples/*"]
@@ -38,6 +37,5 @@ members = ["examples/*"]
 [workspace.dependencies]
 exit_safely = { path = "." }
 
-autocfg = "1.5.1"
-ninja-build_rs = "0.2.1"
+build_safely = "0.6.1"
 try_v2 = "0.9.2"
