@@ -24,7 +24,7 @@
 //! use std::process::Termination as _T;
 //! use exit_safely::Termination;
 //! # #[cfg(has_try_trait_v2)]
-//! use try_v2::Try;
+//! use try_v2::{Try, Transform, Extract};
 //!
 //! # #[cfg(has_try_trait_v2)]
 //! /// First define your exit codes:
@@ -38,6 +38,12 @@
 //!     InvocationError(String) = 2,
 //! }
 //!
+//! // Add useful try methods
+//! # #[cfg(has_try_trait_v2)]
+//! impl<T: _T> Transform<T> for Exit<T> {}
+//! # #[cfg(has_try_trait_v2)]
+//! impl<T: _T> Extract<T> for Exit<T> {}
+//! 
 //! # #[cfg(has_try_trait_v2)]
 //! /// Then any conversion:
 //! /// clap errors return exit_code 2 & output the details
