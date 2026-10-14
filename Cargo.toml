@@ -16,10 +16,10 @@ rust-version = "1.95.0"
 proc-macro = true
 
 [dependencies]
-syn = { version = "2.0.117", features = ["extra-traits"] }
+syn = { version = "3.0.9", features = ["extra-traits"] }
 try_v2 = { workspace = true }
 proc-macro2 = "1.0.106"
-proc_macro2_diagnostic = "0.6.6"
+proc_macro2_diagnostic = "0.8.1"
 quote = "1.0.45"
 
 [dev-dependencies]
@@ -37,4 +37,10 @@ members = ["examples/*"]
 exit_safely = { path = "." }
 
 build_safely = "0.6.1"
-try_v2 = "0.9.2"
+try_v2 = "0.11.1"
+
+[patch.crates-io]
+proc_macro2_diagnostic = {git = "https://github.com/MusicalNinjaDad/proc_macro2_diagnostic", branch = "prep_v0.8.1"}
+try_v2 = { git = "https://github.com/MusicalNinjaDad/try_v2", branch = "deps" }
+try_v2_derive = { git = "https://github.com/MusicalNinjaDad/try_v2", branch = "deps" }
+try_v2_traits = { git = "https://github.com/MusicalNinjaDad/try_v2", branch = "deps" }
