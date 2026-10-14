@@ -43,7 +43,7 @@
 //! impl<T: _T> Transform<T> for Exit<T> {}
 //! # #[cfg(has_try_trait_v2)]
 //! impl<T: _T> Extract<T> for Exit<T> {}
-//! 
+//!
 //! # #[cfg(has_try_trait_v2)]
 //! /// Then any conversion:
 //! /// clap errors return exit_code 2 & output the details
