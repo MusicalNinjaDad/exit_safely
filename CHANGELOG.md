@@ -1,5 +1,11 @@
 # exit_safely changelog
 
+## [v0.4.0] - syn 3.0
+
+### Technical
+
+Move to `syn 3.0` & associated dependencies
+
 ## [v0.3.3] - Respect cargo.toml unstable.allow-features
 
 ### Bugfix
