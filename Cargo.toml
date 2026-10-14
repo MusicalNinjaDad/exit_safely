@@ -38,9 +38,3 @@ exit_safely = { path = "." }
 
 build_safely = "0.6.1"
 try_v2 = "0.11.1"
-
-[patch.crates-io]
-proc_macro2_diagnostic = {git = "https://github.com/MusicalNinjaDad/proc_macro2_diagnostic", branch = "prep_v0.8.1"}
-try_v2 = { git = "https://github.com/MusicalNinjaDad/try_v2", branch = "deps" }
-try_v2_derive = { git = "https://github.com/MusicalNinjaDad/try_v2", branch = "deps" }
-try_v2_traits = { git = "https://github.com/MusicalNinjaDad/try_v2", branch = "deps" }
